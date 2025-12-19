@@ -1,0 +1,28 @@
+# Chunking Strategy 实验依赖
+
+# 核心依赖
+transformers>=4.30.0
+sentence-transformers>=2.2.0
+datasets>=2.14.0
+
+# 向量数据库
+qdrant-client>=1.7.0
+
+# 配置和数据处理
+pyyaml>=6.0
+numpy>=1.24.0
+tqdm>=4.65.0
+
+# RAG评估
+ragas>=0.1.0
+
+# 可视化
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# 可选: GPU加速
+# torch>=2.0.0  # 如果使用GPU
+
+# 开发工具(可选)
+# jupyter>=1.0.0
+# ipython>=8.0.0

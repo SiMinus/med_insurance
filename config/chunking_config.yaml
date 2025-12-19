@@ -1,0 +1,131 @@
+# Chunking Strategy 实验配置
+# 专注研究文本分块策略对RAG检索效果的影响
+
+# 数据集配置
+dataset:
+  name: "squad_v2"
+  split: "validation"  # 使用validation split
+  subset_size: null  # null表示使用全部数据
+  cache_dir: "./data"  # 本地缓存目录
+
+# 固定使用的Embedding模型
+embedding_model:
+  name: "bge-base-en-v1.5"
+  type: "sentence-transformers"
+  model_id: "BAAI/bge-base-en-v1.5"
+  dimension: 768
+  description: "固定使用BGE-base-en-v1.5,专注测试chunking效果"
+
+# Chunking策略配置
+chunking_strategies:
+  # 实验1: Fixed Size Chunking (基线方法)
+  # - name: "fixed_size"
+  #   description: "固定字符数分块"
+  #   experiments:
+  #     - chunk_size: 200
+  #       overlap: 40
+      # - chunk_size: 250
+      #   overlap: 50   # 20% overlap
+      # - chunk_size: 300
+      #   overlap: 60  # 50% overlap
+      
+      # - chunk_size: 450
+      #   overlap: 90
+      # # - chunk_size: 400
+      # # #   overlap: 80   # 20% overlap
+      # - chunk_size: 500
+      #   overlap: 100  # 50% overlap
+      
+      # - chunk_size: 550
+      #   overlap: 110
+      # - chunk_size: 600
+      #   overlap: 120  # 20% overlap
+      # - chunk_size: 650
+      #   overlap: 130  # 20% overlap
+
+      # - chunk_size: 700
+      #   overlap: 140  # 50% overlap
+      
+      # - chunk_size: 900
+      #   overlap: 180
+      # - chunk_size: 1000
+      #   overlap: 200
+      # - chunk_size: 800
+      #   overlap: 160  # 20% overlap
+      # - chunk_size: 2400
+      #   overlap: 480  # 50% overlap
+
+  # # # 实验2: Sentence-based Chunking
+  - name: "sentence_based"
+    description: "按句子边界分块,避免截断"
+    experiments:
+  #     # - target_size: 500  # 目标大小,实际会对齐到句子边界
+  #     #   max_sentences: 3
+      - target_size: 550
+        max_sentences: 5
+  #     - target_size: 600
+  #       max_sentences: 7
+      # - target_size: 2300
+      #   max_sentences: 4
+  
+  # # 实验3: Semantic-based Chunking
+  # - name: "semantic_based"
+  #   description: "基于语义相似度分块,保持语义连贯性"
+  #   experiments:
+  # # #     # - target_size: 400  # 使用中等大小测试语义分块
+  # # #     #   overlap: 0
+  #     - target_size: 300
+  #       overlap: 60       # 20% overlap
+  #     - target_size: 1000
+  #       overlap: 200
+  # #     - target_size: 200
+  # #       overlap: 40      # 20% overlap
+        
+  - name: "recursive_based"
+    description: "基于递归分块策略"
+    experiments:
+
+  #     # - target_size: 600
+  #     #   overlap: 0
+  #     # - target_size: 650
+  #     #   overlap: 325
+      - target_size: 650
+        overlap: 0
+      # - target_size: 900
+      #   overlap: 0
+
+# RAG检索配置
+rag:
+  top_k: 5  # 检索Top-5文档块
+  vector_db: "qdrant"  # 使用Qdrant向量数据库
+
+# 评估指标配置
+evaluation:
+  metrics:
+    # Ragas指标
+    - "context_precision"  # 检索块中包含答案的精确度
+    - "context_recall"     # 答案覆盖率
+    - "retrieval_time"     # 检索耗时
+    
+    # 统计信息
+    - "avg_chunk_length"   # 平均chunk长度
+    - "num_chunks"         # 总chunk数量
+
+  test_size: 500  # 使用500个查询进行评估
+
+# 输出配置
+output:
+  results_dir: "./results"
+  save_detailed_results: true
+  generate_plots: true
+  plot_types:
+    - "heatmap"        # chunk_size vs overlap 热力图
+    - "comparison"     # 不同策略对比柱状图
+    - "tradeoff"       # 准确率 vs 检索时间权衡图
+  verbose: true
+
+# 实验控制
+experiment:
+  run_baseline_only: false  # true=仅运行fixed_size实验
+  skip_semantic: false       # true=跳过耗时的semantic chunking (语义分块计算成本高)
+  max_experiments: 24       # 最多运行实验数(16个fixed + 4个sentence + 4个semantic)
