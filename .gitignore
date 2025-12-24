@@ -35,11 +35,11 @@ Thumbs.db
 *.ipynb_checkpoints
 
 # 数据文件（较大）
-data/raw/
-data/processed/*.json
-data/processed/*.csv
-data/processed/paddle_ocr/
-data/processed/unstructured_ocr/
+# data/raw/
+# data/processed/*.json
+# data/processed/*.csv
+# data/processed/paddle_ocr/
+# data/processed/unstructured_ocr/
 
 # 向量数据库
 qdrant_storage/
@@ -261,3 +261,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# 前端项目 (Web UI)
+web_ui/node_modules/
+web_ui/dist/
+web_ui/coverage/
+web_ui/.env
+web_ui/.env.local
+web_ui/.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

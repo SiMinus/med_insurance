@@ -17,15 +17,17 @@ from qdrant_chunks import (
 
 
 def create_collection(client: QdrantClient, collection_name: str, vector_size: int):
-    """创建集合"""
+    """创建集合（如果不存在）"""
     collections = client.get_collections().collections
     if any(col.name == collection_name for col in collections):
-        client.delete_collection(collection_name=collection_name)
+        print(f"集合 '{collection_name}' 已存在，跳过创建")
+        return
     
     client.create_collection(
         collection_name=collection_name,
         vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
     )
+    print(f"集合 '{collection_name}' 创建成功")
 
 
 def prepare_chunks_with_metadata():
@@ -101,8 +103,9 @@ def main():
     """主函数"""
     # 配置
     COLLECTION_NAME = "medical_insurance_chunks"
-    QDRANT_PATH = "./qdrant_storage"
-    EMBEDDING_MODEL = "BAAI/bge-small-zh-v1.5"
+    # 使用项目根目录的 qdrant_storage（相对于脚本位置的上一级目录）
+    QDRANT_PATH = str(Path(__file__).parent.parent / "qdrant_storage")
+    EMBEDDING_MODEL = "BAAI/bge-m3"
     
     print(f"集合名称: {COLLECTION_NAME}")
     print(f"本地存储: {QDRANT_PATH}")

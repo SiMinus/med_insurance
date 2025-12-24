@@ -4,18 +4,20 @@
 transformers>=4.30.0
 sentence-transformers>=2.2.0
 datasets>=2.14.0
-
+accelerate
 # 向量数据库
 qdrant-client>=1.7.0
+fastapi
+uvicorn
+# RAG评估
+ragas>=0.1.0
+
+
 
 # 配置和数据处理
 pyyaml>=6.0
 numpy>=1.24.0
 tqdm>=4.65.0
-
-# RAG评估
-ragas>=0.1.0
-
 # 可视化
 matplotlib>=3.7.0
 seaborn>=0.12.0
