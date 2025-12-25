@@ -14,6 +14,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from src.basic_qa import KnowledgeBaseQA
+from src.agentic_qa import AgenticQA
 
 app = FastAPI(title="Medical Insurance QA API")
 
@@ -26,22 +27,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global QA instance
+# Global QA instances
 qa_system = None
+agent_system = None
 
 class ChatRequest(BaseModel):
     question: str
     top_k: int = 4
+    mode: str = "basic"  # "basic" or "agentic"
 
 @app.on_event("startup")
 async def startup_event():
-    global qa_system
+    global qa_system, agent_system
     print("正在初始化知识库问答系统...")
     # 使用默认路径，如果需要自定义可以通过环境变量或修改此处
     # 注意：这里会加载模型，需要显存
     try:
         qa_system = KnowledgeBaseQA()
-        print("系统初始化完成！")
+        print("基础 QA 系统初始化完成！")
+        
+        agent_system = AgenticQA(qa_system)
+        print("Agentic QA 系统初始化完成！")
     except Exception as e:
         print(f"系统初始化失败: {e}")
 
@@ -51,28 +57,40 @@ async def chat_endpoint(request: ChatRequest):
         raise HTTPException(status_code=503, detail="System is initializing or failed to initialize")
 
     try:
-        contexts, streamer = qa_system.stream_answer(request.question, request.top_k)
-        
-        async def response_generator() -> AsyncGenerator[str, None]:
-            # 1. 发送参考文档
-            yield json.dumps({
-                "type": "contexts",
-                "data": contexts
-            }, ensure_ascii=False) + "\n"
+        if request.mode == "agentic":
+            if not agent_system:
+                raise HTTPException(status_code=503, detail="Agentic system not initialized")
+                
+            async def agentic_response_generator() -> AsyncGenerator[str, None]:
+                # AgenticQA.stream_answer 直接 yield 格式化好的 JSON 字符串
+                for chunk in agent_system.stream_answer(request.question):
+                    yield chunk
+                    await asyncio.sleep(0.01)
             
-            # 2. 发送生成的文本流
-            full_answer = ""
-            for text in streamer:
-                full_answer += text
+            return StreamingResponse(agentic_response_generator(), media_type="application/x-ndjson")
+            
+        else:
+            # Basic Mode
+            contexts, streamer = qa_system.stream_answer(request.question, request.top_k)
+            
+            async def response_generator() -> AsyncGenerator[str, None]:
+                # 1. 发送参考文档
                 yield json.dumps({
-                    "type": "chunk",
-                    "data": text
+                    "type": "contexts",
+                    "data": contexts
                 }, ensure_ascii=False) + "\n"
-                await asyncio.sleep(0.01)  # 让出控制权
-            
-            # 3. 发送结束标记（可选，这里流结束就是结束）
-            
-        return StreamingResponse(response_generator(), media_type="application/x-ndjson")
+                
+                # 2. 发送生成的文本流
+                full_answer = ""
+                for text in streamer:
+                    full_answer += text
+                    yield json.dumps({
+                        "type": "chunk",
+                        "data": text
+                    }, ensure_ascii=False) + "\n"
+                    await asyncio.sleep(0.01)  # 让出控制权
+                
+            return StreamingResponse(response_generator(), media_type="application/x-ndjson")
         
     except Exception as e:
         print(f"Error generating response: {e}")

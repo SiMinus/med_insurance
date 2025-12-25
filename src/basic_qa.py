@@ -14,6 +14,7 @@ import argparse
 from pathlib import Path
 from typing import Dict, List, Union
 from threading import Thread
+from tqdm import tqdm # Add tqdm import
 
 import torch
 from qdrant_client import QdrantClient
@@ -61,7 +62,10 @@ def load_embedding_model(model_path: Union[str, Path]) -> SentenceTransformer:
 
 
 def load_llm(model_path: Union[str, Path]):
-    tokenizer = AutoTokenizer.from_pretrained(str(model_path), trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(str(model_path), trust_remote_code=True, padding_side='left')
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+        
     model = AutoModelForCausalLM.from_pretrained(
         str(model_path),
         device_map="cuda",
@@ -146,6 +150,65 @@ class KnowledgeBaseQA:
         prompt = self.build_prompt(question, contexts)
         generation = self.generator(prompt, return_full_text=False)[0]["generated_text"]
         return {"answer": generation, "contexts": contexts}
+
+    def batch_answer(self, questions: List[str], top_k: int | None = None, batch_size: int = 4) -> List[Dict]:
+        """批量回答问题，提高 GPU 利用率"""
+        # 1. 批量计算 Embeddings
+        print("正在批量检索...")
+        embeddings = self.embedder.encode(questions, show_progress_bar=True, batch_size=16)
+        
+        all_contexts = []
+        k = top_k or self.top_k
+        
+        # 2. 检索上下文
+        for vec in embeddings:
+            results = self.client.query_points(
+                collection_name=self.collection_name,
+                query=vec.tolist(),
+                limit=k,
+            ).points
+            
+            contexts = []
+            for idx, point in enumerate(results, start=1):
+                payload = point.payload or {}
+                metadata = payload.get("metadata", {})
+                contexts.append(
+                    {
+                        "rank": idx,
+                        "score": point.score,
+                        "text": payload.get("text", ""),
+                        "filename": metadata.get("filename"),
+                        "page": metadata.get("page"),
+                        "chunk_id": metadata.get("chunk_id"),
+                    }
+                )
+            all_contexts.append(contexts)
+            
+        # 3. 构建 Prompts
+        prompts = [self.build_prompt(q, ctx) for q, ctx in zip(questions, all_contexts)]
+        
+        # 4. 批量生成
+        print(f"正在批量生成回答 (总数: {len(prompts)}, batch_size={batch_size})...")
+        
+        results = []
+        # 手动分批处理以显示进度
+        for i in tqdm(range(0, len(prompts), batch_size), desc="Generating"):
+            batch_prompts = prompts[i : i + batch_size]
+            try:
+                # 注意: pipeline 内部也会处理 batching，但这里我们手动分块以便于显示进度和控制显存
+                batch_outputs = self.generator(batch_prompts, batch_size=batch_size, return_full_text=False)
+                
+                for j, output in enumerate(batch_outputs):
+                    ans = output[0]['generated_text']
+                    original_idx = i + j
+                    results.append({"answer": ans, "contexts": all_contexts[original_idx]})
+            except Exception as e:
+                print(f"Batch {i} generation failed: {e}")
+                # 填充错误信息，保持列表长度一致
+                for j in range(len(batch_prompts)):
+                    results.append({"answer": "Error generating answer", "contexts": all_contexts[i+j]})
+            
+        return results
 
     def stream_answer(self, question: str, top_k: int | None = None):
         """流式回答生成"""

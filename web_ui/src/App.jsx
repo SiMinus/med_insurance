@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, FileText, Loader2 } from 'lucide-react';
+import { Send, Bot, User, FileText, Loader2, Brain, ChevronDown, ChevronUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -8,12 +8,39 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
+function ThoughtProcess({ thought }) {
+  const [isOpen, setIsOpen] = useState(true);
+  if (!thought) return null;
+
+  return (
+    <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 overflow-hidden">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-4 py-2 bg-amber-100 text-amber-800 text-sm font-medium hover:bg-amber-200 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <Brain className="w-4 h-4" />
+          <span>思考过程</span>
+        </div>
+        {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+      </button>
+      
+      {isOpen && (
+        <div className="p-4 text-sm text-amber-900 font-mono whitespace-pre-wrap bg-amber-50/50 max-h-60 overflow-y-auto border-t border-amber-200">
+          {thought}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function App() {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: '你好！我是医保政策智能助手。请问有什么关于医保报销、待遇政策的问题可以帮您？' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState('basic'); // 'basic' or 'agentic'
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -38,6 +65,7 @@ function App() {
     setMessages(prev => [...prev, { 
       role: 'assistant', 
       content: '', 
+      thought: '', // Add thought field
       contexts: [], 
       id: assistantMessageId,
       isStreaming: true 
@@ -47,7 +75,10 @@ function App() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: userMessage.content })
+        body: JSON.stringify({ 
+          question: userMessage.content,
+          mode: mode // Send selected mode
+        })
       });
 
       if (!response.ok) throw new Error('Network response was not ok');
@@ -76,6 +107,8 @@ function App() {
                 return { ...msg, contexts: json.data };
               } else if (json.type === 'chunk') {
                 return { ...msg, content: msg.content + json.data };
+              } else if (json.type === 'thought') {
+                return { ...msg, thought: (msg.thought || '') + json.data };
               }
               return msg;
             }));
@@ -102,9 +135,39 @@ function App() {
   return (
     <div className="flex flex-col h-screen max-w-4xl mx-auto bg-white shadow-xl">
       {/* Header */}
-      <header className="bg-blue-600 text-white p-4 shadow-md flex items-center gap-2">
-        <Bot className="w-8 h-8" />
-        <h1 className="text-xl font-bold">医保政策智能问答</h1>
+      <header className="bg-blue-600 text-white p-4 shadow-md flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Bot className="w-8 h-8" />
+          <h1 className="text-xl font-bold">医保政策智能问答</h1>
+        </div>
+        
+        {/* Mode Switcher */}
+        <div className="flex items-center gap-1 bg-blue-700/50 p-1 rounded-lg">
+          <button
+            onClick={() => setMode('basic')}
+            className={cn(
+              "px-3 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-2",
+              mode === 'basic' 
+                ? "bg-white text-blue-600 shadow-sm" 
+                : "text-blue-100 hover:bg-blue-600/50"
+            )}
+          >
+            <FileText size={16} />
+            基础模式
+          </button>
+          <button
+            onClick={() => setMode('agentic')}
+            className={cn(
+              "px-3 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-2",
+              mode === 'agentic' 
+                ? "bg-white text-blue-600 shadow-sm" 
+                : "text-blue-100 hover:bg-blue-600/50"
+            )}
+          >
+            <Brain size={16} />
+            Agent模式
+          </button>
+        </div>
       </header>
 
       {/* Chat Area */}
@@ -122,6 +185,11 @@ function App() {
             </div>
             
             <div className="flex flex-col gap-2 max-w-[80%]">
+              {/* Thought Process Display */}
+              {msg.role === 'assistant' && msg.thought && (
+                <ThoughtProcess thought={msg.thought} />
+              )}
+
               <div className={cn(
                 "p-4 rounded-2xl shadow-sm prose prose-sm max-w-none",
                 msg.role === 'user' 
