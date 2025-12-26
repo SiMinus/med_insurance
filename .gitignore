@@ -40,7 +40,8 @@ Thumbs.db
 # data/processed/*.csv
 # data/processed/paddle_ocr/
 # data/processed/unstructured_ocr/
-
+data/train/
+fine-tuning/output_qwen_lora/
 # 向量数据库
 qdrant_storage/
 

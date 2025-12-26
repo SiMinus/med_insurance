@@ -20,6 +20,7 @@ import torch
 from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, TextIteratorStreamer
+from peft import PeftModel
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = BASE_DIR.parent
@@ -72,6 +73,14 @@ def load_llm(model_path: Union[str, Path]):
         torch_dtype=torch.float16,
         trust_remote_code=True,
     )
+
+    import gc
+    before = len(gc.get_objects())
+    model = PeftModel.from_pretrained(model, "../fine-tuning/output_qwen_lora")
+    after = len(gc.get_objects())
+    after_before = after - before
+    print(f"{after_before} 增量很小（仅 LoRA 参数 + 少量 wrapper 对象）")  # 增量很小（仅 LoRA 参数 + 少量 wrapper 对象）
+
     return pipeline(
         "text-generation",
         model=model,
@@ -134,15 +143,15 @@ class KnowledgeBaseQA:
             ctx_block = "无检索到的参考内容。"
 
         instruction = (
-            "你是医保政策助手，结合参考内容回答用户问题。"
-            "请用中文简洁作答，引用内容时标注来源编号。"
+            "你是医保问答助手，请用中文结合参考内容简洁回答用户问题。但不要在答案中指明用的哪个参考内容, 不要有任何的与参考内容相关的编号出现"
+            "切记只回答和问题相关的内容，不要重复回答相同内容，不要疯狂反复问好祝福，不要做复读机。和问题相关的内容回答完就停止"
         )
 
         return (
             f"{instruction}\n\n"
             f"参考内容:\n{ctx_block}\n\n"
             f"用户问题: {question}\n"
-            "请给出回答，并在末尾列出引用编号。"
+            "请给出回答。"
         )
 
     def answer(self, question: str, top_k: int | None = None) -> Dict:

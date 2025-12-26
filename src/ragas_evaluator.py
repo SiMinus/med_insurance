@@ -9,6 +9,7 @@ import os
 import sys
 from pathlib import Path
 from dotenv import load_dotenv # Add this import
+from datetime import datetime
 
 # --- 自动添加项目根目录到 sys.path ---
 # 获取当前脚本的绝对路径
@@ -48,7 +49,9 @@ def main():
     base_dir = Path(__file__).resolve().parent.parent
     data_path = base_dir / "data" / "page1_3.xlsx"
     output_dir = base_dir / "data"
-    output_file = output_dir / "ragas_result.csv"
+    # 生成带时间戳的文件名，例如: ragas_result_20231225_103000.csv
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_file = output_dir / "ragas_result" / f"ragas_result_{timestamp}.csv"
 
     if not data_path.exists():
         print(f"错误: 数据文件不存在 {data_path}")
@@ -158,8 +161,8 @@ def main():
     ragas_metrics = [
         answer_correctness,
         faithfulness,
-        context_recall,
-        context_precision # 可选添加
+        # context_recall,
+        # context_precision # 可选添加
     ]
 
     print("开始执行 Ragas 评估 (使用 qwen-plus)...")
