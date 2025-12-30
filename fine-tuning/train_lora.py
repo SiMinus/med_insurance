@@ -19,7 +19,7 @@ OUTPUT_DIR = "./output_qwen_lora"                                  # 输出路�
 # 2. 数据量控制 (调试用)
 # 设置为 None 或 0 表示使用全部数据
 # 设置为 50 表示只使用前 50 条数据进行快速测试
-MAX_SAMPLES = None 
+MAX_SAMPLES = None
 
 # 3. 显存与量化配置
 # RTX 4090 (24GB) 跑 7B LoRA:
@@ -101,19 +101,40 @@ def main():
             {"role": "assistant", "content": output}
         ]
         # 使用 tokenizer 的 chat template
-        # 关键修改：tokenize=True，直接返回 input_ids
         input_ids = tokenizer.apply_chat_template(
             messages, 
             tokenize=True, 
             add_generation_prompt=False,
-            max_length=MAX_SEQ_LENGTH,
+            max_length=MAX_SEQ_LENGTH - 1, # 预留空间
             truncation=True
         )
+        
+        # 处理 Qwen 模板可能自带的尾部换行符 (token_id 198)
+        # 确保数据以 <|im_end|> 结尾，而不是 \n
+        if len(input_ids) > 0 and input_ids[-1] == 198: # 198 is '\n'
+            input_ids.pop()
+            
+        # 强制添加 EOS token (<|im_end|>)
+        if len(input_ids) > 0 and input_ids[-1] != tokenizer.eos_token_id:
+            input_ids.append(tokenizer.eos_token_id)
+            
         return {"input_ids": input_ids, "labels": input_ids.copy()}
 
     # 预处理数据：生成 input_ids 列并移除原始列
     print("正在预处理数据...")
     dataset = dataset.map(format_example, remove_columns=dataset.column_names)
+
+    # 打印前5条数据的 input_ids
+    print("\n=== 调试：前5条数据的 input_ids ===")
+    for i in range(min(5, len(dataset))):
+        ids = dataset[i]['input_ids']
+        print(f"Sample {i}: Length={len(ids)}")
+        print(f"IDs: {ids}")
+        # 尝试解码回文本以便观察
+        decoded = tokenizer.decode(ids)
+        print(f"Decoded: {decoded}")
+        print("-" * 50)
+    print("====================================\n")
 
     # 5. 训练参数配置
     args = TrainingArguments(
