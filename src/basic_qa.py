@@ -88,6 +88,7 @@ def load_llm(model_path: Union[str, Path]):
         device_map="cuda",
         max_new_tokens=512,
         repetition_penalty=1.05,
+        eos_token_id=tokenizer.eos_token_id, # 显式指定 EOS token ID
         # Removed invalid flags: temperature, top_p, top_k
     )
 

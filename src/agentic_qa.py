@@ -31,20 +31,24 @@ search_knowledge_base: 当需要回答关于医保政策的具体事实性问题
         return "\n".join([f"[{c['rank']}] {c['text']}" for c in contexts])
 
     def build_system_prompt(self) -> str:
-        return f"""Answer the following questions as best you can. You have access to the following tools:
+        return f"""尽你所能回答以下问题。你可以使用以下工具：
 
 {self.tools_description}
 
-Use the following format:
+请使用以下格式：
 
-Question: the input question you must answer
-Thought: you should always think about what to do
-Action: the action to take, should be one of [{", ".join(self.tool_names)}]
-Action Input: the input to the action
-Observation: the result of the action
-... (this Thought/Action/Action Input/Observation can repeat N times)
-Thought: I now know the final answer
-Final Answer: the final answer to the original input question
+Question: 你必须回答的输入问题
+Thought: 你应该时刻思考下一步该做什么
+Action: 需要采取的行动，必须是 [{", ".join(self.tool_names)}] 之一
+Action Input: 行动的输入参数
+Observation: 行动的结果
+... (Thought/Action/Action Input/Observation 这个过程可以重复多次)
+Thought: 我现在知道了最终答案
+Final Answer: 对原始输入问题的最终回答
+
+如果检索到的信息包含多种情况（例如：不同的病种、医院等级、本地与异地等），而用户的问题缺少这些细节，你必须向用户进行追问以明确情况。
+使用以下格式：
+Ask User: [你想问用户的问题]
 
 Begin!"""
 
@@ -101,11 +105,12 @@ Begin!"""
                 buffer += new_text
                 
                 # 检查是否包含标记 (支持中英文冒号)
-                match = re.search(r"Final Answer[:：]", buffer)
+                match = re.search(r"(Final Answer|Ask User)[:：]", buffer)
                 if match:
                     # 找到了！
                     end_idx = match.end()
                     start_idx = match.start()
+                    tag = match.group(1) # "Final Answer" or "Ask User"
                     
                     # 分割: thought 部分 (标记之前)
                     thought_part = buffer[:start_idx]
@@ -117,6 +122,12 @@ Begin!"""
                     if thought_part:
                         yield json.dumps({"type": "thought", "data": thought_part}, ensure_ascii=False) + "\n"
                     
+                    # 如果是 Ask User，给前端一个特殊的提示，或者直接作为 chunk 输出
+                    # 这里为了兼容性，直接作为 chunk 输出，前端会显示出来
+                    if tag == "Ask User":
+                        # 可以加个前缀让用户知道是追问
+                        yield json.dumps({"type": "chunk", "data": "【需要确认】"}, ensure_ascii=False) + "\n"
+
                     if answer_part:
                         yield json.dumps({"type": "chunk", "data": answer_part}, ensure_ascii=False) + "\n"
                     
@@ -124,22 +135,23 @@ Begin!"""
                 else:
                     # 没找到完整标记，需要处理 buffer 滞留问题
                     # 只有当 buffer 结尾可能是标记的前缀时，才保留
-                    # 标记: "Final Answer:" 或 "Final Answer："
-                    # 简化处理：只检测 "Final Answer" 的前缀
+                    # 标记: "Final Answer:" 或 "Final Answer：" 或 "Ask User:"
+                    # 简化处理：只检测 "Final" 或 "Ask" 的前缀
                     
-                    target = "Final Answer" # 不带冒号，先匹配这个主体
+                    targets = ["Final Answer", "Ask User"]
                     
                     match_len = 0
                     # 检查 buffer 结尾是否匹配 target 的前缀
-                    # 限制检查长度，避免性能问题
-                    check_len = min(len(buffer), len(target))
-                    for i in range(check_len, 0, -1):
-                        if target.startswith(buffer[-i:]):
-                            match_len = i
-                            break
+                    for target in targets:
+                        check_len = min(len(buffer), len(target))
+                        for i in range(check_len, 0, -1):
+                            if target.startswith(buffer[-i:]):
+                                if i > match_len:
+                                    match_len = i
+                                break
                     
                     if match_len > 0:
-                        # buffer 结尾匹配了前缀 (例如 "Final")
+                        # buffer 结尾匹配了前缀
                         # 把前面的安全部分发出去
                         safe_part = buffer[:-match_len]
                         if safe_part:
@@ -148,8 +160,6 @@ Begin!"""
                         buffer = buffer[-match_len:]
                     else:
                         # 完全不匹配，全部发出去
-                        # 但要注意：如果 buffer 是 "Final Answer" 但还没冒号，上面的逻辑会保留它
-                        # 如果 buffer 是 "Final Answer Is" (不匹配)，这里会全部发出去
                         yield json.dumps({"type": "thought", "data": buffer}, ensure_ascii=False) + "\n"
                         buffer = ""
 
