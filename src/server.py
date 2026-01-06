@@ -16,6 +16,9 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 from src.basic_qa import KnowledgeBaseQA
 from src.agentic_qa import AgenticQA
 
+# In-memory sessions for agentic multi-turn
+agent_sessions: dict[str, list[dict]] = {}
+
 app = FastAPI(title="Medical Insurance QA API")
 
 # CORS configuration
@@ -35,6 +38,7 @@ class ChatRequest(BaseModel):
     question: str
     top_k: int = 4
     mode: str = "basic"  # "basic" or "agentic"
+    session_id: str | None = None
 
 @app.on_event("startup")
 async def startup_event():
@@ -60,10 +64,18 @@ async def chat_endpoint(request: ChatRequest):
         if request.mode == "agentic":
             if not agent_system:
                 raise HTTPException(status_code=503, detail="Agentic system not initialized")
+
+            session_id = request.session_id or "default"
+            if session_id not in agent_sessions:
+                agent_sessions[session_id] = []
+
+            # Append user message into session history
+            agent_sessions[session_id].append({"role": "user", "content": request.question})
                 
             async def agentic_response_generator() -> AsyncGenerator[str, None]:
                 # AgenticQA.stream_answer 直接 yield 格式化好的 JSON 字符串
-                for chunk in agent_system.stream_answer(request.question):
+                # It will continue on existing messages if provided.
+                for chunk in agent_system.stream_answer(request.question, messages=agent_sessions[session_id]):
                     yield chunk
                     await asyncio.sleep(0.01)
             

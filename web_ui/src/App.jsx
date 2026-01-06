@@ -41,6 +41,8 @@ function App() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState('basic'); // 'basic' or 'agentic'
+  // 每次刷新页面都生成新的 session_id，方便调试
+  const [sessionId] = useState(() => `${Date.now()}-${Math.random().toString(16).slice(2)}`);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -77,7 +79,8 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           question: userMessage.content,
-          mode: mode // Send selected mode
+          mode: mode, // Send selected mode
+          session_id: sessionId
         })
       });
 

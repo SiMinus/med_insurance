@@ -1,18 +1,24 @@
 from __future__ import annotations
 import json
-import re
-import sys
-from typing import List, Dict, Generator, Tuple, Any
-from threading import Thread
-from transformers import TextIteratorStreamer
+from typing import List, Dict, Any
+import torch
 from src.basic_qa import KnowledgeBaseQA
+import os
+from lmformatenforcer import JsonSchemaParser
+from lmformatenforcer.integrations.transformers import (
+    build_transformers_prefix_allowed_tokens_fn
+)
+# Set environment variable before importing transformers to suppress warnings
+os.environ['TRANSFORMERS_VERBOSITY'] = 'error'
+from transformers import logging as transformers_logging
+transformers_logging.set_verbosity_error()
 
 class AgenticQA:
     def __init__(self, basic_qa: KnowledgeBaseQA):
         self.qa = basic_qa
         self.tokenizer = self.qa.generator.tokenizer
         self.model = self.qa.generator.model
-        
+
         # 定义工具
         self.tools_description = """
 search_knowledge_base: 当需要回答关于医保政策的具体事实性问题时，调用此工具。输入参数为查询关键词。
@@ -23,7 +29,7 @@ search_knowledge_base: 当需要回答关于医保政策的具体事实性问题
         """工具实现: 检索知识库"""
         print(f"\n[Tool Call] search_knowledge_base('{query}')")
         # 复用 basic_qa 的检索功能
-        contexts = self.qa.retrieve(query, top_k=3)
+        contexts = self.qa.retrieve(query, top_k=4)
         if not contexts:
             return "未找到相关信息。"
         
@@ -31,187 +37,278 @@ search_knowledge_base: 当需要回答关于医保政策的具体事实性问题
         return "\n".join([f"[{c['rank']}] {c['text']}" for c in contexts])
 
     def build_system_prompt(self) -> str:
-        return f"""尽你所能回答以下问题。你可以使用以下工具：
+        """系统提示词：鼓励先澄清再回答，使用工具检索。"""
+        return (
+            "你是医保政策助手，需要依据工具返回的事实来回答。"
+            "当工具返回中有不止一个内容可以回答，针对的是不同场景有不同前提，必须向用户追问具体指的是那个场景"
+            "（如病种、医院等级、本地/异地、在职/退休等），不要凭空猜测。"
+            "可以使用以下工具获取资料：\n" + self.tools_description +
+            "\n对话规则：\n"
+            "- 工具调用格式由系统自动处理，你只需决定是否调用。\n"
+            "- 如果仍然信息不足，继续追问，直到可给出明确答案。\n"
+            "- 回答时用中文，简洁且基于检索到的内容。"
+        )
 
-{self.tools_description}
+    def _tool_schema(self) -> List[Dict[str, Any]]:
+        return [
+            {
+                "name": "search_knowledge_base",
+                "description": "检索医保知识库，输入用户最近的两个问题，返回相关片段。",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "query": {"type": "string", "description": "必须包含用户最近两个问询中的所有关键限定条件，如：就医类型（住院/门诊）、医院等级（三级/二级）、参保类型（职工/居民）、就地类型（本地/异地）等。"}
+                    },
+                    "required": ["query"],
+                },
+            }
+        ]
 
-请使用以下格式：
+    def _extract_json_object(self, text: str) -> str | None:
+        """从文本中提取第一个 JSON 对象（基于括号平衡），用于回退解析。"""
+        start = text.find("{")
+        if start == -1:
+            return None
+        depth = 0
+        in_str = False
+        esc = False
+        for i in range(start, len(text)):
+            ch = text[i]
+            if in_str:
+                if esc:
+                    esc = False
+                elif ch == "\\":
+                    esc = True
+                elif ch == '"':
+                    in_str = False
+                continue
+            else:
+                if ch == '"':
+                    in_str = True
+                    continue
+                if ch == "{":
+                    depth += 1
+                elif ch == "}":
+                    depth -= 1
+                    if depth == 0:
+                        return text[start : i + 1]
+        return None
 
-Question: 你必须回答的输入问题
-Thought: 你应该时刻思考下一步该做什么
-Action: 需要采取的行动，必须是 [{", ".join(self.tool_names)}] 之一
-Action Input: 行动的输入参数
-Observation: 行动的结果
-... (Thought/Action/Action Input/Observation 这个过程可以重复多次)
-Thought: 我现在知道了最终答案
-Final Answer: 对原始输入问题的最终回答
-
-如果检索到的信息包含多种情况（例如：不同的病种、医院等级、本地与异地等），而用户的问题缺少这些细节，你必须向用户进行追问以明确情况。
-使用以下格式：
-Ask User: [你想问用户的问题]
-
-Begin!"""
-
-    def stream_answer(self, question: str, top_k: int = 4):
+    def _build_search_query(self, messages: List[Dict[str, Any]]) -> str:
         """
-        Agentic RAG 的流式回答逻辑
-        Yields:
-            json string: {"type": "thought"|"chunk"|"contexts", "data": ...}
+        规则：
+        - 如果上一个 assistant 是追问，则合并最近两个 user
+        - 否则只用最近一个 user
         """
-        # 初始化 Prompt
-        prompt = f"{self.build_system_prompt()}\n\nQuestion: {question}\n"
-        history = prompt
+        user_msgs = [m["content"] for m in messages if m["role"] == "user"]
+        assistant_msgs = [m["content"] for m in messages if m["role"] == "assistant"]
+        if not user_msgs:
+            return ""
+
+        # 判断上一个 assistant 是否追问
         
-        max_steps = 5
-        step = 0
-        final_answer_found = False
+        if assistant_msgs[-1].startswith("追问"):
+            return "；".join(user_msgs[-2:])
+
+        return user_msgs[-1]
+
+    def _chat_with_tools(self, messages: List[Dict[str, Any]], tools: List[Dict[str, Any]]):
+        """优先使用模型的 chat 接口；若不存在则回退到 generate 并解析 JSON 输出。
+
+        返回值与原生 chat 兼容：要么是 dict（可能包含 function_call 和 content），
+        要么是字符串 content。
+        """
+
+        # 回退：拼接一个明确的指令，要求模型以 JSON 输出 function_call 或 content
+        tool_block = json.dumps(tools, ensure_ascii=False)
+        # 将消息合并为文本提示（简化），保留 system 与 user 最近的上下文
+        assembled = []
+        for m in messages:
+            role = m.get("role", "user")
+            content = m.get("content", "")
+            assembled.append(f"[{role}] {content}")
+        prompt = "\n".join(assembled)
+        prompt += (
+            "\n\n可用工具：" + tool_block +
+            "\n\n你必须只输出一个 JSON 对象，不要输出多余文字。JSON 必须包含字段：" 
+            "\n- thought: 字符串。每次都要输出，说明【当前情况】和【下一步怎么做】。" 
+            "\n- action: 对象。每次都要输出，用来表示你接下来要做什么。"
+            "\n\naction 只有一下三种情况："
+            "\n1) 需要调用工具：action = {\"type\": \"function_call\", \"name\": \"search_knowledge_base\", \"arguments\": {\"query\": \"...\"}}"
+            "\n2) 需要追问用户：action = {\"type\": \"ask\", \"content\": \"你的追问\"}"
+            "\n3) 可以直接回答：action = {\"type\": \"answer\", \"content\": \"你的最终答案\"}"
+        )
+
+        schema = {
+    "type": "object",
+    "properties": {
+        "thought": {"type": "string"},
+        "action": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["function_call", "ask", "answer"]
+                },
+                "name": {"type": "string"},
+                "arguments": {"type": "object"},
+                "content": {"type": "string"}
+            },
+            "required": ["type"]
+        }
+    },
+    "required": ["thought", "action"]
+}
+
+
+        inputs = self.tokenizer(prompt, return_tensors="pt")
+        device = getattr(self.model, "device", None)
+        if device is not None:
+            inputs = {k: v.to(device) for k, v in inputs.items()}
         
-        # 打印初始日志
+        parser = JsonSchemaParser(schema)
+
+        prefix_allowed_tokens_fn = build_transformers_prefix_allowed_tokens_fn(
+            self.tokenizer,
+            parser
+        )
+
+        
+        with torch.no_grad():
+            outputs = self.model.generate(
+                **inputs,
+                max_new_tokens=256,
+                do_sample=False,
+                prefix_allowed_tokens_fn=prefix_allowed_tokens_fn,
+                eos_token_id=self.tokenizer.eos_token_id,
+            )
+
+        # 只解码新生成部分（避免把 prompt/system 全部当作 content 打出来）
+        input_len = inputs["input_ids"].shape[1]
+        gen_ids = outputs[0][input_len:]
+        decoded = self.tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
+
+        # 尝试解析为 JSON（允许前后夹杂少量多余文本）
+        json_blob = self._extract_json_object(decoded) or decoded
+        try:
+            return json.loads(json_blob)
+        except Exception:
+            # 回退为纯文本 content
+            return decoded
+
+    def stream_answer(self, question: str, top_k: int = 4, messages: List[Dict[str, Any]] | None = None):
+        """基于 Qwen 函数调用的 Agent 循环，持续澄清后给出答案。"""
+        if messages is None or len(messages) == 0:
+            messages = [
+                {"role": "system", "content": self.build_system_prompt()},
+            ]
+
+        # Ensure system prompt exists at the beginning
+        if messages[0].get("role") != "system":
+            messages.insert(0, {"role": "system", "content": self.build_system_prompt()})
+
+        # Always append current user question
+        # messages.append({"role": "user", "content": question})
+        print("===================================================")
+        print(messages)
+        print("===================================================")
+        tools = self._tool_schema()
+        max_turns = 8
+
         print(f"\n=== Agentic RAG Start: {question} ===")
 
-        while step < max_steps and not final_answer_found:
-            step += 1
-            
-            # 准备生成
-            streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, skip_special_tokens=True)
-            
-            # 设置停止词 (Observation:)
-            # 注意: stop_strings 需要 transformers >= 4.39
-            generation_kwargs = dict(
-                text_inputs=history,
-                return_full_text=False,
-                streamer=streamer,
-                max_new_tokens=512,
-                stop_strings=["Observation:"], 
-                tokenizer=self.tokenizer
-            )
-            
-            # 在新线程中运行生成
-            thread = Thread(target=self.qa.generator, kwargs=generation_kwargs)
-            thread.start()
-            
-            generated_text = ""
-            buffer = ""
-            
-            # 消费流
-            for new_text in streamer:
-                generated_text += new_text
-                
-                # 如果已经进入 Answer 阶段，直接输出 chunk
-                if final_answer_found:
-                    yield json.dumps({"type": "chunk", "data": new_text}, ensure_ascii=False) + "\n"
-                    continue
+        for turn in range(max_turns):
+            # 1) 调用模型，通过包装器优先使用 chat，若无则回退到 generate
+            response = self._chat_with_tools(messages, tools)
+            print(f"\n response: {str(response)}")
 
-                buffer += new_text
-                
-                # 检查是否包含标记 (支持中英文冒号)
-                match = re.search(r"(Final Answer|Ask User)[:：]", buffer)
-                if match:
-                    # 找到了！
-                    end_idx = match.end()
-                    start_idx = match.start()
-                    tag = match.group(1) # "Final Answer" or "Ask User"
-                    
-                    # 分割: thought 部分 (标记之前)
-                    thought_part = buffer[:start_idx]
-                    # answer 部分 (标记之后)
-                    answer_part = buffer[end_idx:]
-                    
-                    final_answer_found = True
-                    
-                    if thought_part:
-                        yield json.dumps({"type": "thought", "data": thought_part}, ensure_ascii=False) + "\n"
-                    
-                    # 如果是 Ask User，给前端一个特殊的提示，或者直接作为 chunk 输出
-                    # 这里为了兼容性，直接作为 chunk 输出，前端会显示出来
-                    if tag == "Ask User":
-                        # 可以加个前缀让用户知道是追问
-                        yield json.dumps({"type": "chunk", "data": "【需要确认】"}, ensure_ascii=False) + "\n"
+            # 兼容两类返回：
+            # - 原生 chat: dict 可能包含 function_call/content
+            # - 回退 generate: dict 可能包含 thought/action
+            if not isinstance(response, dict):
 
-                    if answer_part:
-                        yield json.dumps({"type": "chunk", "data": answer_part}, ensure_ascii=False) + "\n"
                     
-                    buffer = "" # 清空 buffer
+                print(f"\n response不合格: {str(response)}")
+
+
+
+            # 1) thought：每轮都尽量输出（若没有就不输出）
+            thought = response.get("thought")
+            if isinstance(thought, str) and thought.strip():
+                yield json.dumps({"type": "thought", "data": thought}, ensure_ascii=False) + "\n"
+            print(f"\n[Thought] {thought}")
+
+            # 2) action / function_call / content
+            function_call = None
+            action = response.get("action")
+            content = None
+
+            # 回退 action 格式：function_call
+            if isinstance(action, dict) and action.get("type") == "function_call":
+                function_call = {
+                    "name": action.get("name"),
+                    "arguments": action.get("arguments", {}),
+                }
+                content = None
+
+            # 回退 action 格式：ask/answer
+            if isinstance(action, dict) and action.get("type") in {"ask", "answer"}:
+                content = action.get("content")
+                function_call = None
+
+            if function_call:
+                func_name = function_call.get("name")
+                func_args = function_call.get("arguments", {})
+
+                # arguments 可能是 JSON 字符串或 dict
+                if isinstance(func_args, str):
+                    try:
+                        func_args = json.loads(func_args)
+                    except Exception:
+                        func_args = {"query": func_args}
+
+                print(f"\n[ToolCall] {func_name} args={func_args}")
+
+                if func_name == "search_knowledge_base":
+                    query = self._build_search_query(messages)
+                    observation = self.search_knowledge_base(query)
                 else:
-                    # 没找到完整标记，需要处理 buffer 滞留问题
-                    # 只有当 buffer 结尾可能是标记的前缀时，才保留
-                    # 标记: "Final Answer:" 或 "Final Answer：" 或 "Ask User:"
-                    # 简化处理：只检测 "Final" 或 "Ask" 的前缀
-                    
-                    targets = ["Final Answer", "Ask User"]
-                    
-                    match_len = 0
-                    # 检查 buffer 结尾是否匹配 target 的前缀
-                    for target in targets:
-                        check_len = min(len(buffer), len(target))
-                        for i in range(check_len, 0, -1):
-                            if target.startswith(buffer[-i:]):
-                                if i > match_len:
-                                    match_len = i
-                                break
-                    
-                    if match_len > 0:
-                        # buffer 结尾匹配了前缀
-                        # 把前面的安全部分发出去
-                        safe_part = buffer[:-match_len]
-                        if safe_part:
-                            yield json.dumps({"type": "thought", "data": safe_part}, ensure_ascii=False) + "\n"
-                        # buffer 只保留匹配的部分
-                        buffer = buffer[-match_len:]
-                    else:
-                        # 完全不匹配，全部发出去
-                        yield json.dumps({"type": "thought", "data": buffer}, ensure_ascii=False) + "\n"
-                        buffer = ""
+                    # 对未知工具提供纠正提示
+                    observation = (
+                        f"系统不支持工具名 '{func_name}'，只支持以下工具："
+                        f"{', '.join(self.tool_names)}。请更正后重试。"
+                    )
 
-            # 本轮生成结束
-            # 打印日志
-            print(f"[Step {step}] Generated: {generated_text.strip()}")
-            
-            # 更新历史
-            history += generated_text
-            
-            # 如果已经找到最终答案，结束循环
-            if final_answer_found:
+                print(f"\n[Observation] {observation}")
+
+                # 将工具返回作为 observation 放回 messages
+                messages.append({
+                    "role": "tool",  # 使用固定角色，避免未知工具名导致问题
+                    "content": observation,
+                })
+
+                continue
+
+            # 无工具调用，则认为给出了最终回答/追问
+            if content:
+                
+                if action.get("type") == "answer":
+                    messages.append({
+                    "role": "assistant",
+                    "content": content,
+                })
+                    yield json.dumps({"type": "chunk", "data": content}, ensure_ascii=False) + "\n"
+                    print(f"\n[Answer] {content}")
+                    
+                else:
+                    messages.append({
+                    "role": "assistant",
+                    "content": "追问:" + content,
+                })
+                    yield json.dumps({"type": "chunk", "data": content}, ensure_ascii=False) + "\n"
+                    print(f"\n[Ask] {content}")
+
                 break
-            
-            # 解析 Action
-            # 期望格式: Action: search_knowledge_base\nAction Input: query
-            action_match = re.search(r"Action:\s*(.*?)\nAction Input:\s*(.*)", generated_text, re.DOTALL)
-            
-            if action_match:
-                action_name = action_match.group(1).strip()
-                action_input = action_match.group(2).strip()
-                
-                print(f"[Action] {action_name} -> {action_input}")
-                
-                observation = ""
-                if action_name == "search_knowledge_base":
-                    observation = self.search_knowledge_base(action_input)
-                else:
-                    observation = f"Error: Unknown tool '{action_name}'"
-                
-                print(f"[Observation] {observation[:100]}...") # 只打印前100字符
-                
-                # 构造 Observation 文本
-                obs_text = f"\nObservation: {observation}\n"
-                history += obs_text
-                
-                # 将 Observation 发送给前端显示在 Thought 区域
-                yield json.dumps({"type": "thought", "data": obs_text}, ensure_ascii=False) + "\n"
-                
-            else:
-                # 没找到 Action 也没找到 Final Answer，可能是生成中断或者格式错误
-                # 强制添加一个 Observation 提示模型继续，或者结束
-                if "Action:" in generated_text and "Action Input:" not in generated_text:
-                     # 可能是生成了一半
-                     pass
-                elif "Observation:" in generated_text:
-                     # 模型自己生成了 Observation?
-                     pass
-                else:
-                     # 可能是模型不知道该干嘛了，或者已经结束了但没写 Final Answer
-                     # 尝试强制结束
-                     print("[Warning] Model loop without Action or Final Answer")
-                     break
+
 
         print(f"=== Agentic RAG End ===\n")
