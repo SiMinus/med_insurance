@@ -1,0 +1,500 @@
+﻿question,ground_truth,source_id,answer,contexts,faithfulness_score,faithfulness_reason,correctness_score,correctness_reason
+大夫说我这属于外伤性脑出血导致的偏瘫，我是职工医保，这能申请门诊慢性病报销吗？,不包含（外伤性脑出血除外）。,chunk_20," 
+回答: 不能。外伤性脑出血属于工伤或意外伤害范畴，不属于基本医疗保险门诊慢性病病种。应通过工伤保险或商业保险进行理赔。[1] 中列举的‘脑血管意外偏瘫’特指非外伤性的脑卒中后遗症。","1().哈尔滨城镇职工医保门诊慢性病待遇。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**报销比例**：统筹基金支付比例为 90%。
+**支付限额**：每季度统筹金最高支付限额 800元，一年内统筹金最高支付限额 3200元。
+(Score: 0.660641894233866, ChunkID: chunk_20)
+
+2().哈尔滨城乡居民门诊慢性病待遇（病种与基础标准）。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**统筹基金支付比例**：70%。
+**支付限额**：每人每季度统筹基金最高支付限额 400元，一个年度内统筹基金最高支付限额 1600元。
+(Score: 0.6212662475232829, ChunkID: chunk_45)
+
+3().哈尔滨城镇职工医保门诊慢性病管理规则。
+1. **就医原则**：门诊慢性病患者需在定点医疗机构或定点零售药店发生的政策范围内医疗费用纳入统筹基金支付范围。
+2. **结算规则**：不设起付标准（0门槛费），不累计、不滚存、不结转。统筹基金支付实行季度限额管理。
+3. **多病种待遇**：同时患有两种或以上规定慢性病病种的，每人每季度统筹基金支付限额增加 200元（即季度限额变为1000元，年度4000元）。
+4. **额度归属**：门诊慢性病费用统一计入医疗保险年度最高支付限额内。
+(Score: 0.6187752236408268, ChunkID: chunk_21)
+
+4().哈尔滨医保**黑龙江省内**异地就医可以直接结算的门诊慢特病病种名单。
+1. **门诊慢性病**：除跨省病种外，还包括风湿性心脏病（心功能不全3级以上）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、冠心病（心功能不全3级以上）、脑血管病后遗症、肝硬化失代偿期、慢性肾功能不全（III期以上）、类风湿性关节炎（功能3级以上）、房颤、慢性阻塞性肺疾病、癫痫、帕金森病、支气管哮喘、重症肌无力、布鲁氏病、慢性病毒性肝炎。
+2. **门诊特殊疾病**：再生障碍性贫血、系统性红斑狼疮、严重精神障碍、活动性结核。
+(Score: 0.6077833791036664, ChunkID: chunk_65)",1.0,The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found.,1.0,"Step 1: Expected Output contains 1 unique key phrase: '外伤性脑出血除外'. Actual Output correctly states '外伤性脑出血属于工伤或意外伤害范畴' and explicitly excludes it from chronic disease coverage, preserving the core exclusion intent. All N=1 item is present → M=1 → F_Score = 0.3 + 0.7*(1/1) = 1.0. Step 2: Semantic meaning is fully aligned — both convey that external-trauma-induced intracranial hemorrhage is excluded from outpatient chronic disease coverage under basic medical insurance. S_Score = 1.0. Step 3: Final_Score = 0.8*1.0 + 0.2*1.0 = 1.0. Step 4: F_Score ≠ 0, so no veto applies. All steps satisfied precisely."
+我是单位上班的，得了重症肌无力，想办门诊慢性病，这病在不在医保报销范围内？,在（包括重症肌无力）。,chunk_20," 
+回答: 在。重症肌无力属于哈尔滨城镇职工医保门诊慢性病病种（待遇代码 01）。在职人员每季度统筹基金支付限额为 800 元，支付比例为 90%。","1().哈尔滨城镇职工医保门诊慢性病待遇。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**报销比例**：统筹基金支付比例为 90%。
+**支付限额**：每季度统筹金最高支付限额 800元，一年内统筹金最高支付限额 3200元。
+(Score: 0.6719203954077191, ChunkID: chunk_20)
+
+2().哈尔滨城乡居民门诊慢性病待遇（病种与基础标准）。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**统筹基金支付比例**：70%。
+**支付限额**：每人每季度统筹基金最高支付限额 400元，一个年度内统筹基金最高支付限额 1600元。
+(Score: 0.6332584025366232, ChunkID: chunk_45)
+
+3().哈尔滨城镇职工医保门诊慢性病管理规则。
+1. **就医原则**：门诊慢性病患者需在定点医疗机构或定点零售药店发生的政策范围内医疗费用纳入统筹基金支付范围。
+2. **结算规则**：不设起付标准（0门槛费），不累计、不滚存、不结转。统筹基金支付实行季度限额管理。
+3. **多病种待遇**：同时患有两种或以上规定慢性病病种的，每人每季度统筹基金支付限额增加 200元（即季度限额变为1000元，年度4000元）。
+4. **额度归属**：门诊慢性病费用统一计入医疗保险年度最高支付限额内。
+(Score: 0.6287804900833159, ChunkID: chunk_21)
+
+4().哈尔滨医保**黑龙江省内**异地就医可以直接结算的门诊慢特病病种名单。
+1. **门诊慢性病**：除跨省病种外，还包括风湿性心脏病（心功能不全3级以上）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、冠心病（心功能不全3级以上）、脑血管病后遗症、肝硬化失代偿期、慢性肾功能不全（III期以上）、类风湿性关节炎（功能3级以上）、房颤、慢性阻塞性肺疾病、癫痫、帕金森病、支气管哮喘、重症肌无力、布鲁氏病、慢性病毒性肝炎。
+2. **门诊特殊疾病**：再生障碍性贫血、系统性红斑狼疮、严重精神障碍、活动性结核。
+(Score: 0.6278334658497966, ChunkID: chunk_65)",1.0,"The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found, and all claims are well-supported.",1.0,"The Expected Output is minimal, only confirming inclusion with a parenthetical note about myasthenia gravis. The Actual Output introduces specific details not in the Expected Output—such as quarterly payment limits (800 yuan), reimbursement rate (90%), and a benefit code (01)—which are irrelevant to the simple confirmation required. However, it does correctly include the key entity '重症肌无力' and affirms inclusion. For Fact Extraction: N=1 (only the condition's presence is expected), M=1 (it is present), so F_Score = 0.3 + 0.7*(1/1) = 1.0. Semantic similarity is high because the core message confirms inclusion, despite added noise. S_Score is 0.95. Final_Score = 0.8*1.0 + 0.2*0.95 = 0.99, which rounds to 10. The response over-answers but does not contradict."
+职工门诊慢性病报销比例挺高的吧？我听说是90%？,统筹基金支付比例为90%。,chunk_20," 
+回答: 是的，哈尔滨城镇职工门诊慢性病（如高血压、糖尿病等）统筹基金支付比例统一为 90%。","1().哈尔滨城镇职工医保门诊慢性病待遇。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**报销比例**：统筹基金支付比例为 90%。
+**支付限额**：每季度统筹金最高支付限额 800元，一年内统筹金最高支付限额 3200元。
+(Score: 0.6479448566598056, ChunkID: chunk_20)
+
+2().哈尔滨城镇职工门诊特殊疾病待遇，病种为**恶性肿瘤**。**统筹基金支付项目包括**：放疗、化疗、免疫治疗、内分泌治疗、抗疼痛治疗以及与病情相关的一次性医用材料、检查检验、服务设施等费用。**报销比例**：在职人员支付 90%，退休人员支付 93%。
+(Score: 0.6466577525360008, ChunkID: chunk_11)
+
+3().哈尔滨城镇职工门诊特殊疾病待遇，病种包括**血友病、再生障碍性贫血、系统性红斑狼疮**。**统筹基金支付项目**：按病种对应的常规治疗项目执行（未单独列出具体项目）。**报销比例**：在职人员支付 90%，退休人员支付 93%。
+(Score: 0.6453047692325355, ChunkID: chunk_16)
+
+4().哈尔滨城镇职工门诊特殊疾病待遇，各病种对应的**统筹基金支付项目**及待遇如下：
+1. **重性精神病药物维持治疗**：在职人员支付 90%，退休人员支付 90%（注意：退休不执行93%标准）。
+2. **肺结核药物维持治疗**：在职人员支付 95%，退休人员支付 98%。
+3. **特殊药品（靶向用药）**：在职人员支付 90%，退休人员支付 93%。
+(Score: 0.643330473356266, ChunkID: chunk_18)",1.0,"The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found, and all claims are well-supported.",1.0,"Step 1: Expected Output contains one numerical value ('90%') and one key entity ('统筹基金支付比例'). Actual Output correctly includes both '90%' and '统筹基金支付比例', so M = N = 2 → F_Score = 0.3 + 0.7*(2/2) = 1.0. Step 2: Semantic meaning is identical — both assert the payment ratio is 90%; extra context in Actual Output (e.g., '哈尔滨城镇职工门诊慢性病...') does not contradict or distort the core claim, so S_Score = 1.0. Step 3: Final_Score = 0.8*1.0 + 0.2*1.0 = 1.0. Step 4: Not triggered since F_Score > 0. All steps satisfied precisely."
+我是职工医保慢性病患者，每个季度医保统筹最多能给我报多少钱？是800块吗？,每季度统筹金最高支付限额800元。,chunk_20," 
+回答: 是的。门诊慢性病每季度统筹金最高支付限额为 800 元。","1().一、最高支付限额
+参保职工一个年度内发生符合职工医保统筹
+基金支付范围（以下称“统筹基金支付范围”）
+的医疗费用，医保统筹基金（以下称“统筹基金”）
+最高支付限额为50万元。
+(Score: 0.7200734546462075, ChunkID: chunk_one)
+
+2().哈尔滨城镇职工医保门诊慢性病待遇。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**报销比例**：统筹基金支付比例为 90%。
+**支付限额**：每季度统筹金最高支付限额 800元，一年内统筹金最高支付限额 3200元。
+(Score: 0.6886547218358529, ChunkID: chunk_20)
+
+3().哈尔滨城镇职工门诊特殊疾病待遇，病种为**器官移植术后**（肝、肾、肺、心脏移植）。**统筹基金支付项目为**：抗排异治疗（以及与病情相关的治疗药品和检查检验费用）。
+**报销比例**：在职与退休人员均为 90%。
+**年度支付限额**：
+1. 术后2年以内（含2年）：年限额 9万元，每季度不超过 22500元。
+2. 术后2年以上：年限额 7万元，每季度不超过 17500元。
+(Score: 0.6781663590277621, ChunkID: chunk_15)
+
+4().哈尔滨城镇职工医保门诊慢性病管理规则。
+1. **就医原则**：门诊慢性病患者需在定点医疗机构或定点零售药店发生的政策范围内医疗费用纳入统筹基金支付范围。
+2. **结算规则**：不设起付标准（0门槛费），不累计、不滚存、不结转。统筹基金支付实行季度限额管理。
+3. **多病种待遇**：同时患有两种或以上规定慢性病病种的，每人每季度统筹基金支付限额增加 200元（即季度限额变为1000元，年度4000元）。
+4. **额度归属**：门诊慢性病费用统一计入医疗保险年度最高支付限额内。
+(Score: 0.6778944094899833, ChunkID: chunk_21)",1.0,"The score is 1.00 because there are no contradictions, meaning the actual output is fully aligned with and faithfully represents the retrieval context.",1.0,"Step 1: Expected Output contains one numerical value (800) and one key phrase ('每季度统筹金最高支付限额'); both appear identically in Actual Output, so M = N = 1 → F_Score = 0.3 + 0.7*(1/1) = 1.0. Step 2: Semantic meaning is identical — both convey the same factual limit; '是的。' in Actual Output adds affirmation but does not alter core meaning, so S_Score = 1.0. Step 3: Final_Score = 0.8*1.0 + 0.2*1.0 = 1.0. Step 4: Not triggered since F_Score ≠ 0. All steps fully satisfied."
+家里老人是职工医保，有III期以上的慢性肾功能不全，这属于慢病报销范围吗？,属于（慢性肾功能不全III期以上）。,chunk_20," 
+回答: 属于。III期以上慢性肾功能不全属于哈尔滨城镇职工医保门诊慢性病病种，统筹基金支付比例为 90%，每季度最高支付限额 800 元。","1().哈尔滨城镇职工医保门诊慢性病待遇。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**报销比例**：统筹基金支付比例为 90%。
+**支付限额**：每季度统筹金最高支付限额 800元，一年内统筹金最高支付限额 3200元。
+(Score: 0.6153908667750753, ChunkID: chunk_20)
+
+2().哈尔滨城乡居民门诊慢性病待遇（病种与基础标准）。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**统筹基金支付比例**：70%。
+**支付限额**：每人每季度统筹基金最高支付限额 400元，一个年度内统筹基金最高支付限额 1600元。
+(Score: 0.5868375860440627, ChunkID: chunk_45)
+
+3().哈尔滨城镇职工医保门诊慢性病管理规则。
+1. **就医原则**：门诊慢性病患者需在定点医疗机构或定点零售药店发生的政策范围内医疗费用纳入统筹基金支付范围。
+2. **结算规则**：不设起付标准（0门槛费），不累计、不滚存、不结转。统筹基金支付实行季度限额管理。
+3. **多病种待遇**：同时患有两种或以上规定慢性病病种的，每人每季度统筹基金支付限额增加 200元（即季度限额变为1000元，年度4000元）。
+4. **额度归属**：门诊慢性病费用统一计入医疗保险年度最高支付限额内。
+(Score: 0.5709049789501539, ChunkID: chunk_21)
+
+4().哈尔滨城镇职工门诊特殊疾病待遇，病种为**尿毒症**。
+**统筹基金支付项目包括**：
+1. **透析门诊用药**：在职人员报销 90%，退休人员报销 93%。
+2. **腹膜透析组套**：定额标准为每人每日 160元，统筹基金支付 95%（即支付152元/日）。
+(Score: 0.5679184559379745, ChunkID: chunk_14)",1.0,"The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found, and all claims are well-supported.",1.0,"The Expected Output contains one key named entity: '慢性肾功能不全III期以上'. The Actual Output correctly includes this entity and adds extra details such as医保支付比例90% and 每季度最高支付限额800元, which are not in the Expected Output but do not contradict it. For Fact Extraction: N=1 (one key entity), M=1 (correctly recalled), so F_Score = 0.3 + 0.7*(1/1) = 1.0. Semantic similarity is high because the core meaning — that III期以上慢性肾功能不全是纳入医保门诊慢性病的 — is preserved and expanded upon without distortion. S_Score=1.0. Final_Score = 0.8*1.0 + 0.2*1.0 = 1.0."
+我办了职工门诊慢性病，去买药的时候有门槛费吗？还是直接就能报？,不设起付标准（0门槛费）。,chunk_21," 
+回答: 没有门槛费（0起点）。门诊慢性病费用直接按季度限额进行报销，无需先垫付再报销。","1().哈尔滨城镇职工医保门诊慢性病管理规则。
+1. **就医原则**：门诊慢性病患者需在定点医疗机构或定点零售药店发生的政策范围内医疗费用纳入统筹基金支付范围。
+2. **结算规则**：不设起付标准（0门槛费），不累计、不滚存、不结转。统筹基金支付实行季度限额管理。
+3. **多病种待遇**：同时患有两种或以上规定慢性病病种的，每人每季度统筹基金支付限额增加 200元（即季度限额变为1000元，年度4000元）。
+4. **额度归属**：门诊慢性病费用统一计入医疗保险年度最高支付限额内。
+(Score: 0.6816232443972039, ChunkID: chunk_21)
+
+2().哈尔滨城乡居民门诊慢性病管理规则。
+1. **就医原则**：门诊慢性病患者在定点医疗机构或定点零售药店发生的政策范围内医疗费用纳入统筹基金支付范围。
+2. **结算规则**：统筹基金支付实行季度限额管理，不设起付标准（0门槛费），不累计、不滚存、不结转，统一计入医疗保险年度最高支付限额内。
+3. **多病种待遇**：同时患有两种或以上规定慢性病病种的，每人每季度统筹基金支付限额增加 100元（即季度限额 500元，年度 2000元）。
+(Score: 0.6627977267188099, ChunkID: chunk_46)
+
+3().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 6.5% 缴费的退休人员。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 55%。
+2. 二级定点医院：统筹基金支付 65%。
+3. 一级及以下定点医院：统筹基金支付 75%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.646615683845922, ChunkID: chunk_23)
+
+4().哈尔滨城乡居民“两病”门诊待遇（高血压、糖尿病专项保障）。
+**适用对象**：未达到门诊慢性病鉴定标准的“两病”参保居民。
+**待遇标准**：
+1. **起付标准**：不设起付标准（0门槛费）。
+2. **支付比例**：二级定点医疗机构 70%，二级以下定点基层医疗机构 80%。
+3. **支付限额**：高血压患者降血压用药年度统筹基金最高支付限额 400元；糖尿病患者降血糖用药年度统筹基金最高支付限额 600元。
+(Score: 0.6458225796007786, ChunkID: chunk_50)",1.0,"The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found, and all claims are well-supported.",0.6,"Step 1: Expected Output contains two key items: '不设起付标准' (semantic equivalent to 'no deductible') and '0门槛费' (numerical/phrase: '0'). Actual Output includes '没有门槛费（0起点）' — correctly captures '0' and the concept of no threshold, but omits '起付标准' (deductible) terminology; '门诊慢性病费用...' introduces new, unsupported detail not in Expected Output. So N = 2 (‘不设起付标准’, ‘0门槛费’), M = 1 (only ‘0’ is explicitly and correctly recalled; '没有门槛费' is close but not identical phrasing, and '起付标准' is fully missing). F_Score = 0.3 + 0.7*(1/2) = 0.65. Step 2: Semantic intent ('no deductible') is partially conveyed, but Actual Output adds unrelated procedural claims (quarterly limits, no upfront payment) absent in Expected Output, diluting fidelity; S_Score ≈ 0.4. Step 3: Final_Score = 0.8*0.65 + 0.2*0.4 = 0.52 + 0.08 = 0.60 → rounded to integer 6. Step 4 does not apply (F_Score > 0)."
+我有高血压和糖尿病两种慢病，都是职工医保认定的，那我每季度的报销额度能多一点吗？,每人每季度统筹基金支付限额增加200元（即1000元）。,chunk_21," 
+回答: 职工医保认定的高血压和糖尿病属于不同病种。高血压通常按普通‘门诊慢特病’管理（限额 800/年），而糖尿病胰岛素治疗则单独有 2400 元/年的额度。两者互不影响，您可以同时享受这两种待遇。但季度总额度仍需控制在 800 元内（慢病）+ 2400 元内（胰岛素）的范围内。","1().哈尔滨城乡居民“两病”门诊待遇（高血压、糖尿病专项保障）。
+**适用对象**：未达到门诊慢性病鉴定标准的“两病”参保居民。
+**待遇标准**：
+1. **起付标准**：不设起付标准（0门槛费）。
+2. **支付比例**：二级定点医疗机构 70%，二级以下定点基层医疗机构 80%。
+3. **支付限额**：高血压患者降血压用药年度统筹基金最高支付限额 400元；糖尿病患者降血糖用药年度统筹基金最高支付限额 600元。
+(Score: 0.6760077580279218, ChunkID: chunk_50)
+
+2().哈尔滨城镇职工医保门诊慢性病待遇。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**报销比例**：统筹基金支付比例为 90%。
+**支付限额**：每季度统筹金最高支付限额 800元，一年内统筹金最高支付限额 3200元。
+(Score: 0.6492533209446957, ChunkID: chunk_20)
+
+3().哈尔滨城镇职工门诊特殊疾病待遇，病种为**糖尿病胰岛素治疗**。**统筹基金支付项目**：胰岛素治疗相关费用。**报销比例**：在职人员支付 90%，退休人员支付 93%。**特殊限制**：统筹基金年度最多支付不超过 2400元。
+(Score: 0.6426067769125299, ChunkID: chunk_17)
+
+4().哈尔滨城镇职工门诊特殊疾病待遇，病种为**器官移植术后**（肝、肾、肺、心脏移植）。**统筹基金支付项目为**：抗排异治疗（以及与病情相关的治疗药品和检查检验费用）。
+**报销比例**：在职与退休人员均为 90%。
+**年度支付限额**：
+1. 术后2年以内（含2年）：年限额 9万元，每季度不超过 22500元。
+2. 术后2年以上：年限额 7万元，每季度不超过 17500元。
+(Score: 0.6400878038708486, ChunkID: chunk_15)",0.6,"The score is 0.60 because the actual output incorrectly states hypertension has an annual 800 yuan limit (while the context specifies a quarterly 800 yuan limit, i.e., annual 3200 yuan) and wrongly combines the chronic disease and insulin treatment limits as both being quarterly (800 + 2400), whereas the context clearly states insulin treatment has an annual 2400 yuan limit—not quarterly.",0.0,"The Expected Output contains one unique numerical value: '200' (as in '200元') and the derived value '1000' (from '800+200'). Neither appears in the Actual Output, which instead cites unrelated figures (800, 2400) and misstates policy — it describes separate annual limits and a quarterly cap structure absent in the Expected Output. Thus N=2, M=0 → F_Score = 0.3 + 0.7*(0/2) = 0.3. However, per Step 4 (Final Veto), since F_Score is not 0, the veto does not apply — but semantic similarity is near zero: Expected states a specific 200-yuan increase raising the limit to 1000 yuan per quarter, while Actual Output describes two unrelated annual limits and incorrectly imposes a quarterly cap sum. S_Score ≈ 0.0. Final_Score = 0.8*0.3 + 0.2*0.0 = 0.24 → rounded to integer score 0."
+职工慢病的额度如果这个季度没用完，能攒到下个季度接着用吗？,不累计、不滚存、不结转。,chunk_21,不能。门诊慢性病费用实行‘季度限额’管理，不累计、不滚存、不结转。每季度的额度只能在该季度使用，用不完的部分作废。,"1().哈尔滨城镇职工门诊特殊疾病待遇，病种为**器官移植术后**（肝、肾、肺、心脏移植）。**统筹基金支付项目为**：抗排异治疗（以及与病情相关的治疗药品和检查检验费用）。
+**报销比例**：在职与退休人员均为 90%。
+**年度支付限额**：
+1. 术后2年以内（含2年）：年限额 9万元，每季度不超过 22500元。
+2. 术后2年以上：年限额 7万元，每季度不超过 17500元。
+(Score: 0.5766014012860757, ChunkID: chunk_15)
+
+2().哈尔滨职工医保个人账户异地使用规则（免备案）。
+**政策内容**：自 2023年 1月 1日起，职工个人账户实行异地免备案政策。即在异地国家联网定点医疗机构或定点零售药店均可直接使用个人账户（无需办理任何备案手续）。
+(Score: 0.5734887230824216, ChunkID: chunk_58)
+
+3().哈尔滨城镇职工医保门诊慢性病管理规则。
+1. **就医原则**：门诊慢性病患者需在定点医疗机构或定点零售药店发生的政策范围内医疗费用纳入统筹基金支付范围。
+2. **结算规则**：不设起付标准（0门槛费），不累计、不滚存、不结转。统筹基金支付实行季度限额管理。
+3. **多病种待遇**：同时患有两种或以上规定慢性病病种的，每人每季度统筹基金支付限额增加 200元（即季度限额变为1000元，年度4000元）。
+4. **额度归属**：门诊慢性病费用统一计入医疗保险年度最高支付限额内。
+(Score: 0.5681755878874846, ChunkID: chunk_21)
+
+4().哈尔滨城乡居民门诊慢性病管理规则。
+1. **就医原则**：门诊慢性病患者在定点医疗机构或定点零售药店发生的政策范围内医疗费用纳入统筹基金支付范围。
+2. **结算规则**：统筹基金支付实行季度限额管理，不设起付标准（0门槛费），不累计、不滚存、不结转，统一计入医疗保险年度最高支付限额内。
+3. **多病种待遇**：同时患有两种或以上规定慢性病病种的，每人每季度统筹基金支付限额增加 100元（即季度限额 500元，年度 2000元）。
+(Score: 0.5665292239911941, ChunkID: chunk_46)",1.0,"The score is 1.00 because there are no contradictions, meaning the actual output is fully aligned with and faithfully represents the retrieval context.",1.0,"N=3 (three phrases: '不累计', '不滚存', '不结转'); all three appear identically in Actual Output, so M=3 and F_Score = 0.3 + 0.7*(3/3) = 1.0. Semantic similarity is perfect: Actual Output fully includes Expected Output verbatim and adds only contextually consistent, non-contradictory explanatory details ('季度限额' management, expiration rule), preserving identical meaning and intent. S_Score = 1.0. Final_Score = 0.8*1.0 + 0.2*1.0 = 1.0. No veto applies since F_Score > 0."
+我是公司在职员工，按9.5%交的医保，去哈医大一院（三级医院）看普通门诊，能报销多少？,50%。,chunk_22," 
+起付标准 400 元，报销比例 50%。在职人员在哈医大一院（三级）门诊统筹支付 50%。举例：您花费 1000 元，统筹基金支付 (1000 - 400) × 50% = 300 元。","1().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 9.5% 缴费的参保人员（在职）。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 50%。
+2. 二级定点医院：统筹基金支付 60%。
+3. 一级及以下定点医院：统筹基金支付 70%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.7296104618048603, ChunkID: chunk_22)
+
+2().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 6.5% 缴费的退休人员。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 55%。
+2. 二级定点医院：统筹基金支付 65%。
+3. 一级及以下定点医院：统筹基金支付 75%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.7238112934755794, ChunkID: chunk_23)
+
+3().哈尔滨城镇职工医保住院待遇，就医类型为哈市三级定点医院。**起付标准（门槛费）**为 720元。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 90%，退休人员支付 93%。
+(Score: 0.7216283553552318, ChunkID: chunk_1)
+
+4().哈尔滨城镇职工医保住院待遇，就医类型为哈市一级定点医院，起付标准 240元；无等级医院，起付标准 200元。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 90%，退休人员支付 93%。
+(Score: 0.7143241473253737, ChunkID: chunk_3)",0.3333333333333333,"The score is 0.33 because the actual output incorrectly presents '起付标准 400 元，报销比例 50%' as a universal rule, omitting that the 400-yuan deductible applies only to ordinary outpatient care and the 50% reimbursement rate is strictly limited to in-service personnel at tertiary hospitals — not retirees (who receive 55%) or other populations/hospital levels. It also falsely applies the formula '(1000 − 400) × 50% = 300' without specifying beneficiary type or hospital eligibility, and assumes Harbin Medical University First Hospital is confirmed as a tertiary定点 hospital for outpatient co-payment — a detail not verified in the retrieval context.",1.0,"Expected Output contains only one numerical value: '50%'. Actual Output correctly includes '50%' (M=1, N=1), so F_Score = 0.3 + 0.7*(1/1) = 1.0. Semantically, the Actual Output conveys the same core fact (50% reimbursement rate) as the Expected Output, though with extra context; the meaning and intent align fully, so S_Score = 1.0. Final_Score = 0.8*1.0 + 0.2*1.0 = 1.0. No veto applies since F_Score > 0."
+我是个在职的小职员，去社区医院（一级）看感冒，听说报销比例高，具体是多少？,70%。,chunk_22," 
+回答: 在职人员在哈市一级及以下定点医院普通门诊，统筹基金支付比例为 75%。","1().哈尔滨城镇职工医保住院待遇，传染病患者在传染病专科定点医院住院。**起付标准（门槛费）**为 0元。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 95%，退休人员支付 98%。
+(Score: 0.6585549178359298, ChunkID: chunk_5)
+
+2().哈尔滨城镇职工医保住院待遇，就医类别为异地急诊或自由转诊。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 80%，退休人员支付 83%。**起付标准（门槛费）**根据医院等级不同：三级医院 720元，二级医院 480元，一级医院 240元，无等级医院 200元。
+(Score: 0.6398174245632231, ChunkID: chunk_7)
+
+3().哈尔滨城镇职工医保住院待遇，就医类别为异地转诊。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 85%，退休人员支付 88%。**起付标准（门槛费）**根据医院等级不同：三级医院 720元，二级医院 480元，一级医院 240元，无等级医院 200元。
+(Score: 0.6373668377559932, ChunkID: chunk_6)
+
+4().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 6.5% 缴费的退休人员。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 55%。
+2. 二级定点医院：统筹基金支付 65%。
+3. 一级及以下定点医院：统筹基金支付 75%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.63621940304834, ChunkID: chunk_23)",1.0,The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found.,0.3,"The Expected Output contains one numerical value: '70%'. The Actual Output incorrectly states '75%', which does not match. Thus, M = 0 and N = 1, resulting in F_Score = 0.3 + 0.7*(0/1) = 0.3. Since the key fact is incorrect, semantic similarity cannot compensate for the factual error. S_Score is low because the meaning contradicts the expected answer. Applying the formula: Final_Score = (0.8 * 0.3) + (0.2 * 0.2) = 0.28. However, since F_Score > 0, the veto rule does not apply. The response contains a precise but incorrect percentage, leading to a low score."
+在职职工看普通门诊，一年最多能报销多少钱啊？封顶线是多少？,3000元。,chunk_22,住院有封顶线，门诊是 3000。,"1().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 9.5% 缴费的参保人员（在职）。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 50%。
+2. 二级定点医院：统筹基金支付 60%。
+3. 一级及以下定点医院：统筹基金支付 70%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.6666950369256721, ChunkID: chunk_22)
+
+2().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 6.5% 缴费的退休人员。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 55%。
+2. 二级定点医院：统筹基金支付 65%。
+3. 一级及以下定点医院：统筹基金支付 75%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.664232351023905, ChunkID: chunk_23)
+
+3().哈尔滨城镇职工门诊特殊疾病待遇，病种为**器官移植术后**（肝、肾、肺、心脏移植）。**统筹基金支付项目为**：抗排异治疗（以及与病情相关的治疗药品和检查检验费用）。
+**报销比例**：在职与退休人员均为 90%。
+**年度支付限额**：
+1. 术后2年以内（含2年）：年限额 9万元，每季度不超过 22500元。
+2. 术后2年以上：年限额 7万元，每季度不超过 17500元。
+(Score: 0.6501899603756717, ChunkID: chunk_15)
+
+4().哈尔滨城镇职工医保门诊慢性病待遇。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**报销比例**：统筹基金支付比例为 90%。
+**支付限额**：每季度统筹金最高支付限额 800元，一年内统筹金最高支付限额 3200元。
+(Score: 0.6340791356565594, ChunkID: chunk_20)",1.0,The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found.,1.0,"N=1 (only '3000' in Expected Output); M=1 ('3000' appears in Actual Output), so F_Score = 0.3 + 0.7*(1/1) = 1.0. Semantic similarity is high: '住院有封顶线，门诊是 3000。' conveys the same core numeric information (3000) as '3000元。', though with extra context; meaning and intent align. S_Score = 0.95 (minor stylistic difference, no contradiction). Final_Score = 0.8*1.0 + 0.2*0.95 = 0.99 → rounded to integer 10. No veto applies since F_Score > 0."
+在职职工去门诊看病，得花多少钱以上医保才开始报销？门槛费是多少？,400元。,chunk_22,哈尔滨城镇职工医保普通门诊（门诊共济保障）起付标准（门槛费）统一为 400 元。,"1().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 9.5% 缴费的参保人员（在职）。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 50%。
+2. 二级定点医院：统筹基金支付 60%。
+3. 一级及以下定点医院：统筹基金支付 70%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.7012861028692454, ChunkID: chunk_22)
+
+2().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 6.5% 缴费的退休人员。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 55%。
+2. 二级定点医院：统筹基金支付 65%。
+3. 一级及以下定点医院：统筹基金支付 75%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.698634289488627, ChunkID: chunk_23)
+
+3().哈尔滨城镇职工医保住院待遇，传染病患者在传染病专科定点医院住院。**起付标准（门槛费）**为 0元。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 95%，退休人员支付 98%。
+(Score: 0.6750302788996495, ChunkID: chunk_5)
+
+4().哈尔滨城镇职工医保住院待遇，就医类别为异地急诊或自由转诊。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 80%，退休人员支付 83%。**起付标准（门槛费）**根据医院等级不同：三级医院 720元，二级医院 480元，一级医院 240元，无等级医院 200元。
+(Score: 0.6748700711313538, ChunkID: chunk_7)",1.0,The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found.,1.0,"N=1 (only '400元' in Expected Output); M=1 (it appears verbatim in Actual Output), so F_Score = 0.3 + 0.7*(1/1) = 1.0. Semantic similarity is high: Actual Output fully contains and correctly contextualizes the expected value ('400元') with accurate, relevant details about Harbin's outpatient threshold; no distortion of meaning. S_Score = 1.0. Final_Score = 0.8*1.0 + 0.2*1.0 = 1.0. No veto applies since F_Score > 0."
+我都退休好几年了，也是职工医保，去三级医院看个门诊，报销比例比在职的高吗？是多少？,55%（比在职高5个百分点）。,chunk_23," 
+回答: 是的。退休人员门诊共济报销比例较高。在三级定点医院，退休人员统筹基金支付 55%。","1().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 6.5% 缴费的退休人员。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 55%。
+2. 二级定点医院：统筹基金支付 65%。
+3. 一级及以下定点医院：统筹基金支付 75%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.6542622202178233, ChunkID: chunk_23)
+
+2().哈尔滨城镇职工医保住院待遇，就医类别为异地转诊。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 85%，退休人员支付 88%。**起付标准（门槛费）**根据医院等级不同：三级医院 720元，二级医院 480元，一级医院 240元，无等级医院 200元。
+(Score: 0.6520588631794684, ChunkID: chunk_6)
+
+3().哈尔滨城镇职工医保住院待遇，就医类别为异地急诊或自由转诊。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 80%，退休人员支付 83%。**起付标准（门槛费）**根据医院等级不同：三级医院 720元，二级医院 480元，一级医院 240元，无等级医院 200元。
+(Score: 0.6514266126330303, ChunkID: chunk_7)
+
+4().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 9.5% 缴费的参保人员（在职）。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 50%。
+2. 二级定点医院：统筹基金支付 60%。
+3. 一级及以下定点医院：统筹基金支付 70%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.6406031944111937, ChunkID: chunk_22)",1.0,"The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found, and all claims are well-supported.",0.6,"Step 1: Expected Output contains one unique numerical value ('55%') and one comparative phrase ('比在职高5个百分点'). Actual Output includes '55%' correctly but omits the comparative detail entirely. So N=2 (55%, +5 percentage points), M=1 → F_Score = 0.3 + 0.7*(1/2) = 0.65. Step 2: Semantic similarity is low — Expected Output emphasizes the *comparative advantage* (55% is *higher by 5 pts than在职*), while Actual Output only states the absolute rate and adds unrelated context ('三级定点医院', '退休人员统筹基金支付') without referencing the comparison; intent diverges significantly. S_Score ≈ 0.2. Step 3: Final_Score = 0.8*0.65 + 0.2*0.2 = 0.52 + 0.04 = 0.56 → rounded to integer 6. Step 4 does not apply (F_Score > 0)."
+退休老人在一级医院看普通门诊，报销比例能达到多少？,75%。,chunk_23,退休人员在哈市一级及以下定点医院进行普通门诊统筹结算时，统筹基金的支付比例为 75%。,"1().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 6.5% 缴费的退休人员。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 55%。
+2. 二级定点医院：统筹基金支付 65%。
+3. 一级及以下定点医院：统筹基金支付 75%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.6775441420186352, ChunkID: chunk_23)
+
+2().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 9.5% 缴费的参保人员（在职）。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 50%。
+2. 二级定点医院：统筹基金支付 60%。
+3. 一级及以下定点医院：统筹基金支付 70%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.6496790542091266, ChunkID: chunk_22)
+
+3().哈尔滨城镇职工门诊特殊疾病待遇，病种为**器官移植术后**（肝、肾、肺、心脏移植）。**统筹基金支付项目为**：抗排异治疗（以及与病情相关的治疗药品和检查检验费用）。
+**报销比例**：在职与退休人员均为 90%。
+**年度支付限额**：
+1. 术后2年以内（含2年）：年限额 9万元，每季度不超过 22500元。
+2. 术后2年以上：年限额 7万元，每季度不超过 17500元。
+(Score: 0.6439604955214129, ChunkID: chunk_15)
+
+4().哈尔滨城镇职工医保住院待遇，传染病患者在传染病专科定点医院住院。**起付标准（门槛费）**为 0元。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 95%，退休人员支付 98%。
+(Score: 0.6337222050592315, ChunkID: chunk_5)",1.0,"The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found, and all claims are well-supported.",1.0,"The Expected Output contains one key numerical value: '75%'. This value is correctly present in the Actual Output, so M = 1 and N = 1, resulting in F_Score = 0.3 + 0.7*(1/1) = 1.0. The Actual Output includes additional context about retirees and hospital levels, but the core fact matches exactly. For semantic similarity, the Actual Output conveys the same essential information—the 75% payment rate—within a broader context, so S_Score is 1.0. Applying the formula: Final_Score = (0.8 * 1.0) + (0.2 * 1.0) = 1.0. All criteria are met with full alignment."
+退休人员的普通门诊，一年的最高支付限额和在职的一样吗？是多少？,一样，3000元。,chunk_23,退休人员普通门诊（门诊共济保障）年度最高支付限额为 3000 元，与在职人员不同。在职人员无固定限额，按实际发生额结算。,"1().哈尔滨城镇职工门诊特殊疾病待遇，病种为**器官移植术后**（肝、肾、肺、心脏移植）。**统筹基金支付项目为**：抗排异治疗（以及与病情相关的治疗药品和检查检验费用）。
+**报销比例**：在职与退休人员均为 90%。
+**年度支付限额**：
+1. 术后2年以内（含2年）：年限额 9万元，每季度不超过 22500元。
+2. 术后2年以上：年限额 7万元，每季度不超过 17500元。
+(Score: 0.664111963098234, ChunkID: chunk_15)
+
+2().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 6.5% 缴费的退休人员。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 55%。
+2. 二级定点医院：统筹基金支付 65%。
+3. 一级及以下定点医院：统筹基金支付 75%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.6397959627235958, ChunkID: chunk_23)
+
+3().哈尔滨城镇职工门诊特殊疾病待遇，各病种对应的**统筹基金支付项目**及待遇如下：
+1. **重性精神病药物维持治疗**：在职人员支付 90%，退休人员支付 90%（注意：退休不执行93%标准）。
+2. **肺结核药物维持治疗**：在职人员支付 95%，退休人员支付 98%。
+3. **特殊药品（靶向用药）**：在职人员支付 90%，退休人员支付 93%。
+(Score: 0.6392244320881089, ChunkID: chunk_18)
+
+4().哈尔滨城镇职工门诊特殊疾病待遇，病种为**糖尿病胰岛素治疗**。**统筹基金支付项目**：胰岛素治疗相关费用。**报销比例**：在职人员支付 90%，退休人员支付 93%。**特殊限制**：统筹基金年度最多支付不超过 2400元。
+(Score: 0.6328689756214041, ChunkID: chunk_17)",0.6666666666666666,"The score is 0.67 because the actual output incorrectly claims that employees have no fixed limit for outpatient services and are reimbursed based on actual expenses, while the retrieval context explicitly states a clear annual cap of 3000 yuan, indicating a fixed limit rather than variable reimbursement.",0.0,"F_Score is 0 because Expected Output contains only '3000元' (N=1), but Actual Output misstates the policy: it claims retirees have a 3000 yuan cap while employed persons have no cap, whereas Expected Output says '一样' (same), implying both groups share the 3000 yuan limit. Thus M=0 → F_Score = 0.3 + 0.7*(0/1) = 0.3, but Final Veto (Step 4) applies since F_Score is effectively 0 for the core factual claim (sameness vs difference); the response contradicts the expected fact, so Final_Score must not exceed 0.1."
+我单位这几个月医保欠费了，我现在去门诊看病还能享受待遇吗？,不享受待遇（欠缴情况）。,chunk_24," 
+回答: 您好！如果您的个人账户余额足够支付本次医疗费用，您可以先用个人账户余额结算。待单位补缴欠费并恢复您的待遇资格后，您可持发票到就诊医院办理退费及补结算手续。期间发生的自费部分通常无法追溯报销。建议尽快联系单位人力资源部解决欠费问题。","1().哈尔滨城镇职工医保普通门诊待遇温馨提示（不享受待遇及欠费处理）：
+1. **不享受待遇的情况**：非 9.5% 缴费的参保人员及 6.5% 缴费的退休人员；缴费未到账、未生成缴费计划或有欠缴情况；未达到起付标准 400元；超过门诊共济年度最高支付限额 3000元的部分。
+2. **欠费处理**：如因参保缴费问题（未生成计划、未到账、欠缴）导致未及时享受待遇，须在就医时先行使用医保结算，待待遇正常后可到所就诊的定点医药机构进行退结算并重新结算。
+(Score: 0.7239058379204515, ChunkID: chunk_24)
+
+2().哈尔滨城乡居民“两病”门诊待遇（高血压、糖尿病专项保障）。
+**适用对象**：未达到门诊慢性病鉴定标准的“两病”参保居民。
+**待遇标准**：
+1. **起付标准**：不设起付标准（0门槛费）。
+2. **支付比例**：二级定点医疗机构 70%，二级以下定点基层医疗机构 80%。
+3. **支付限额**：高血压患者降血压用药年度统筹基金最高支付限额 400元；糖尿病患者降血糖用药年度统筹基金最高支付限额 600元。
+(Score: 0.6639950983163243, ChunkID: chunk_50)
+
+3().哈尔滨城镇职工医保门诊慢性病待遇。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**报销比例**：统筹基金支付比例为 90%。
+**支付限额**：每季度统筹金最高支付限额 800元，一年内统筹金最高支付限额 3200元。
+(Score: 0.6444696459833976, ChunkID: chunk_20)
+
+4().哈尔滨城镇职工医保普通门诊待遇（门诊共济保障），适用人群为 6.5% 缴费的退休人员。
+**起付标准（门槛费）**：400元。
+**报销比例**：
+1. 三级定点医院：统筹基金支付 55%。
+2. 二级定点医院：统筹基金支付 65%。
+3. 一级及以下定点医院：统筹基金支付 75%。
+**年度限额**：门诊共济年度最高支付限额为 3000元。
+(Score: 0.6388703441060166, ChunkID: chunk_23)",1.0,The score is 1.00 because there are no contradictions—the actual output fully aligns with the retrieval context.,0.0,"Expected Output contains exactly one key factual item: '不享受待遇（欠缴情况）', which conveys the core status and reason. Actual Output omits this entirely—no mention of '不享受待遇', '欠缴', or equivalent semantic phrasing. Thus, M=0, N=1 → F_Score = 0.3 + 0.7*(0/1) = 0.3. However, per Step 4 (Final Veto), since F_Score is not 0, the veto does not apply—but F_Score is low and S_Score is also low: Actual Output misrepresents the situation as resolvable via personal account and future reimbursement, contradicting the Expected Output's definitive denial of coverage. Semantic meaning diverges fundamentally. Final_Score ≈ (0.8×0.3) + (0.2×0.1) = 0.26 → rounds to score 0 per integer scale."
+之前医保欠费没报销成，现在补上了，我之前看病的钱还能回来重新结算吗？,待待遇正常后可到所就诊的定点医药机构进行退结算并重新结算。,chunk_24," 
+如果您的欠费补缴成功且符合哈尔滨医保规定（如未超时、未自费部分），可以申请补结算。通常需要携带发票原件、费用清单、处方及身份证明到原就诊医院医保办进行手工退费及重新结算。具体操作需咨询原就诊医院。","1().哈尔滨医保异地就医结算便利与“双向享受”政策。
+1. **直接结算**：已成功办理异地备案的参保人，可持社会保障卡、身份证或医保电子凭证在备案地开通的所有异地联网定点医药机构享受住院和门诊费用直接结算服务。
+2. **双向享受**：已办理**长期异地备案**的参保人员，可以在备案地和参保地（哈尔滨）双向享受医保待遇（即备案后回哈尔滨看病也能正常报销，不降低比例）。
+(Score: 0.6177742199891276, ChunkID: chunk_53)
+
+2().哈尔滨城镇职工医保普通门诊待遇温馨提示（不享受待遇及欠费处理）：
+1. **不享受待遇的情况**：非 9.5% 缴费的参保人员及 6.5% 缴费的退休人员；缴费未到账、未生成缴费计划或有欠缴情况；未达到起付标准 400元；超过门诊共济年度最高支付限额 3000元的部分。
+2. **欠费处理**：如因参保缴费问题（未生成计划、未到账、欠缴）导致未及时享受待遇，须在就医时先行使用医保结算，待待遇正常后可到所就诊的定点医药机构进行退结算并重新结算。
+(Score: 0.6103028855875134, ChunkID: chunk_24)
+
+3().哈尔滨医保零星报销（手工报销）适用范围与限制条件。
+1. **适用情况**：在异地定点医药机构未能直接结算的门诊特殊疾病、门诊慢性病、门诊特殊药品、急诊转住院、异地安置住院、临时外出就医住院、转诊转院住院等。
+2. **本地限制（重要）**：哈尔滨市统筹区域范围内定点医药机构就医需持卡直接结算。未在定点医药机构就诊的医疗费用，医保基金不予支付（急诊抢救除外）。
+(Score: 0.6066536199762957, ChunkID: chunk_73)
+
+4().哈尔滨城乡居民“两病”门诊管理规则（高血压、糖尿病）。
+1. **待遇互斥**：已经享受统筹地区门诊慢性病待遇的参保人员，继续执行现有的门诊慢性病保障政策，不再重复享受“两病”待遇。
+2. **住院冲突**：住院期间医疗费用按住院报销政策执行，住院期间不能同时发生“两病”门诊医疗费用。
+3. **购药渠道**：可在本统筹区内任意二级及以下定点医疗机构购买“两病”药品，实行医保直接结算。
+4. **异地报销**：长期异地居住的，在“两病”未实行异地门诊直接结算前，由参保人先行垫付，再到参保地经办机构申请报销。
+(Score: 0.6039479311157419, ChunkID: chunk_51)",1.0,The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found.,0.0,"Fact Extraction & Recall: Expected Output contains 0 numerical values, percentages, or named entities (only generic terms like '待遇正常', '定点医药机构'), so N=0. Division by zero makes F_Score undefined; per standard practice, when N=0, M/N is treated as 1 if Actual conveys same core meaning, but here Actual introduces new specific constraints ('哈尔滨医保规定', '未超时、未自费部分', '发票原件,费用清单,处方,身份证明', '原就诊医院医保办', '手工退费') not in Expected — these are factual additions, not omissions, so M/N cannot be assumed 1. Since N=0 and Actual diverges semantically with extra unsupported details, F_Score defaults to 0. Per Step 4 (Final Veto), Final_Score must not exceed 0.1. Semantic Similarity is low: Expected states a simple, general reprocessing path post-eligibility; Actual imposes strict local procedural requirements absent from Expected, altering intent and scope. Thus Final_Score is capped at 0.1 and rounded to integer 0."
+我是交城乡居民医保的，这一年下来，医保统筹最多能帮我掏多少钱？封顶线是多少？,18万元。,chunk_25," 
+回答: 哈尔滨城乡居民医保年度统筹基金最高支付限额为 18万元。这是参保人员因住院或门诊特病产生的合规医疗费用中，医保基金能报销的最高额度。","1().一、最高支付限额
+参保职工一个年度内发生符合职工医保统筹
+基金支付范围（以下称“统筹基金支付范围”）
+的医疗费用，医保统筹基金（以下称“统筹基金”）
+最高支付限额为50万元。
+(Score: 0.7221463057109977, ChunkID: chunk_one)
+
+2().哈尔滨城乡居民医保待遇基础规则。
+**最高支付限额**：参保居民一个年度内发生符合统筹基金支付范围的医疗费用，统筹基金最高支付限额为 18万元。
+**支付范围**：包括药品目录、诊疗项目和医疗服务设施项目目录等符合社会保险法律法规规定的项目。
+(Score: 0.7018703456755356, ChunkID: chunk_25)
+
+3().哈尔滨城乡居民门诊慢性病待遇（病种与基础标准）。
+**覆盖病种**：包括高血压合并症、糖尿病合并症、脑血管意外偏瘫（外伤性脑出血除外）、重症冠心病（心功能不全3级以上）、器官移植术后辅助治疗（肝、肾、肺、心脏移植）、肺源性心脏病（慢性心力衰竭或慢性呼吸衰竭）、慢性阻塞性肺疾病、扩张型心肌病、房颤、癫痫、真性红细胞增多症、肝豆状核变性、慢性肾功能不全（III期以上）、风湿性心脏病（心功能不全3级以上）、帕金森氏病或帕金森氏病综合症、肝硬化、重症肌无力、类风湿性关节炎（功能3级以上）、慢性病毒性肝炎、布鲁氏菌病、艾滋病、支气管哮喘、阿尔茨海默症、冠状动脉支架术后药物治疗、冠状动脉搭桥术后药物治疗、银屑病、子宫内膜异位症、慢性心力衰竭。
+**统筹基金支付比例**：70%。
+**支付限额**：每人每季度统筹基金最高支付限额 400元，一个年度内统筹基金最高支付限额 1600元。
+(Score: 0.6596745843932488, ChunkID: chunk_45)
+
+4().哈尔滨城乡居民门诊特殊疾病待遇（器官移植术后抗排异治疗），适用人群为成人居民。
+**覆盖范围**：肝、肾、肺、心脏移植术后抗排异治疗（以及与病情相关的治疗药品和检查检验费用）。
+**统筹基金支付比例**：80%。
+**支付限额**：
+1. **术后2年以内（含2年）**：年度最高支付限额 6.3万元，统筹金每人每季度最多支付不超过 15750元。
+2. **术后2年以上**：年度最高支付限额 4.9万元，统筹金每人每季度最多支付不超过 12250元。
+(Score: 0.6586235485023924, ChunkID: chunk_32)",0.5,"The score is 0.50 because the actual output incorrectly narrows the 180,000 yuan annual maximum payment limit to 'hospitalization or outpatient special diseases only', while the retrieval context clarifies it is a general annual ceiling for all medical expenses within the统筹 fund payment scope—including outpatient chronic diseases (1600 yuan/year) and outpatient special diseases (e.g., 63,000 yuan/year)—not an exclusive cap for just those two categories.",1.0,"Step 1: Expected Output contains exactly one numerical value ('18万元'), and Actual Output correctly includes it — so N=1, M=1, F_Score = 0.3 + 0.7*(1/1) = 1.0. Step 2: Semantic similarity is high — Actual Output fully preserves the core fact (18万元 limit) and adds accurate, non-contradictory explanatory context; intent (stating the maximum payment limit) is identical. S_Score ≈ 1.0. Step 3: Final_Score = 0.8*1.0 + 0.2*1.0 = 1.0. Step 4: Not triggered since F_Score > 0. All steps satisfied precisely."
+家里小孩是学生，交的居民医保，在三级医院住院，起付线是多少钱？,720元。,chunk_26," 
+哈尔滨城乡居民医保（学生儿童）在哈市三级定点医院住院，起付标准为 720 元。","1().哈尔滨城乡居民医保住院待遇（哈市定点医院普通住院）。
+**报销比例与起付标准**：
+1. **无等级医院**：起付标准 100元。报销比例：学生儿童 90%，成人居民 90%。
+2. **一级定点医院**：起付标准 240元。报销比例：学生儿童 90%，成人居民 90%。
+3. **二级定点医院**：起付标准 480元。报销比例：学生儿童 80%，成人居民 80%。
+4. **三级定点医院**：起付标准 720元。报销比例：学生儿童 80%，成人居民 70%。
+(Score: 0.6999148656053045, ChunkID: chunk_26)
+
+2().哈尔滨城乡居民医保住院待遇（异地就医）。
+**起付标准**：无等级医院 100元，一级医院 240元，二级医院 480元，三级医院 720元。
+**报销比例**：
+1. **异地转诊**：
+   - 学生儿童：无等级/一级 85%，二级 75%，三级 75%。
+   - 成人居民：无等级/一级 85%，二级 75%，三级 65%。
+2. **异地急诊、自由转诊**：
+   - 学生儿童：无等级/一级 80%，二级 70%，三级 70%。
+   - 成人居民：无等级/一级 80%，二级 70%，三级 60%。
+(Score: 0.6852180405074703, ChunkID: chunk_28)
+
+3().哈尔滨城镇职工医保住院待遇，就医类型为哈市三级定点医院。**起付标准（门槛费）**为 720元。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 90%，退休人员支付 93%。
+(Score: 0.6717577833774871, ChunkID: chunk_1)
+
+4().哈尔滨城乡居民医保住院待遇（哈市专科定点医院）。
+1. **精神疾病**：在专科定点医院住院，起付标准 0元。报销比例：学生儿童 85%，成人居民 85%。
+2. **肺结核**：在专科定点医院住院，起付标准 0元。报销比例：学生儿童 85%，成人居民 85%。
+3. **耐多药肺结核**：在专科定点医院住院，起付标准 0元。报销比例：学生儿童 90%，成人居民 90%。
+4. **其他传染病**：在专科定点医院住院，起付标准 0元。报销比例：学生儿童 85%，成人居民 70%。
+(Score: 0.6667370751552526, ChunkID: chunk_27)",1.0,"The score is 1.00 because the actual output fully aligns with the retrieval context—no contradictions were found, and all claims are well-supported.",1.0,"The Expected Output contains one numerical value with a unit: '720元'. This exact value appears correctly in the Actual Output, so M = 1 and N = 1, resulting in F_Score = 0.3 + 0.7*(1/1) = 1.0. The Actual Output includes additional context about哈尔滨城乡居民医保 (student children) and hospital levels, but the core fact is preserved. Semantically, the message aligns with the expected intent of stating the 720 yuan deductible, even though it is embedded in a broader sentence. Thus, S_Score is 1.0. Applying the formula: Final_Score = (0.8 * 1.0) + (0.2 * 1.0) = 1.0."
+我是成年居民，在二级医院住院，报销比例跟学生一样吗？是多少？,80%（学生也是80%）。,chunk_26," 
+学生儿童报销比例为 80%，成人居民也是 80%。二级医院统一执行此标准。","1().哈尔滨城乡居民医保住院待遇（哈市定点医院普通住院）。
+**报销比例与起付标准**：
+1. **无等级医院**：起付标准 100元。报销比例：学生儿童 90%，成人居民 90%。
+2. **一级定点医院**：起付标准 240元。报销比例：学生儿童 90%，成人居民 90%。
+3. **二级定点医院**：起付标准 480元。报销比例：学生儿童 80%，成人居民 80%。
+4. **三级定点医院**：起付标准 720元。报销比例：学生儿童 80%，成人居民 70%。
+(Score: 0.6864588354666876, ChunkID: chunk_26)
+
+2().哈尔滨城乡居民医保住院待遇（哈市专科定点医院）。
+1. **精神疾病**：在专科定点医院住院，起付标准 0元。报销比例：学生儿童 85%，成人居民 85%。
+2. **肺结核**：在专科定点医院住院，起付标准 0元。报销比例：学生儿童 85%，成人居民 85%。
+3. **耐多药肺结核**：在专科定点医院住院，起付标准 0元。报销比例：学生儿童 90%，成人居民 90%。
+4. **其他传染病**：在专科定点医院住院，起付标准 0元。报销比例：学生儿童 85%，成人居民 70%。
+(Score: 0.6700989024164571, ChunkID: chunk_27)
+
+3().哈尔滨城乡居民医保住院待遇（异地就医）。
+**起付标准**：无等级医院 100元，一级医院 240元，二级医院 480元，三级医院 720元。
+**报销比例**：
+1. **异地转诊**：
+   - 学生儿童：无等级/一级 85%，二级 75%，三级 75%。
+   - 成人居民：无等级/一级 85%，二级 75%，三级 65%。
+2. **异地急诊、自由转诊**：
+   - 学生儿童：无等级/一级 80%，二级 70%，三级 70%。
+   - 成人居民：无等级/一级 80%，二级 70%，三级 60%。
+(Score: 0.665174262396923, ChunkID: chunk_28)
+
+4().哈尔滨城镇职工医保住院待遇，传染病患者在传染病专科定点医院住院。**起付标准（门槛费）**为 0元。报销比例：统筹基金（起付线-15万元）与大额基金（15万-50万元）支付比例一致，在职人员支付 95%，退休人员支付 98%。
+(Score: 0.6641477520006056, ChunkID: chunk_5)",1.0,"The score is 1.00 because there are no contradictions, meaning the actual output is fully aligned with and faithfully represents the retrieval context.",1.0,"Expected Output contains one unique numerical value: '80%'. Actual Output correctly includes '80%' three times, so M = N = 1 → F_Score = 0.3 + 0.7*(1/1) = 1.0. Semantic similarity is high: both convey that the reimbursement rate is 80%, and the parenthetical '学生也是80%' in Expected is fully covered by '学生儿童报销比例为 80%' in Actual. No factual omission or distortion; extra details (e.g., '成人居民', '二级医院') are permissible per instructions. Thus S_Score ≈ 1.0, and Final_Score = 0.8*1.0 + 0.2*1.0 = 1.0 → rounded to integer 10."

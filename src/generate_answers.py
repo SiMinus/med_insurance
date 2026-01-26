@@ -31,7 +31,7 @@ from src.basic_qa import KnowledgeBaseQA
 def main():
     # 1. 路径配置
     base_dir = Path(__file__).resolve().parent.parent
-    data_path = base_dir / "data" / "page1_3.xlsx"
+    data_path = base_dir / "data" / "page4_11.xlsx"
     output_dir = base_dir / "data" / "generated_answers"
     
     # 确保输出目录存在
@@ -59,6 +59,8 @@ def main():
                 col_map["question"] = col
             if "标准答案" in col or "ground_truth" in col.lower():
                 col_map["ground_truth"] = col
+            if "来源 (Source ID)" in col:
+                col_map["source"] = col
         
         if "question" not in col_map or "ground_truth" not in col_map:
              print(f"错误: Excel 文件必须包含 '问题' 和 '标准答案' 列。当前列: {df.columns.tolist()}")
@@ -66,6 +68,7 @@ def main():
 
         questions_data = df[col_map["question"]].tolist()
         ground_truths_data = df[col_map["ground_truth"]].tolist()
+        sources_data = df[col_map["source"]].tolist() if "source" in col_map else [None] * len(questions_data)
         
     except Exception as e:
         print(f"读取 Excel 失败: {e}")
@@ -86,13 +89,20 @@ def main():
     ground_truths = []
     answers = []
     contexts_list = []
+    sources = []
     
     # 预处理数据
     valid_data = []
-    for q, gt in zip(questions_data, ground_truths_data):
+    for q, gt, src in zip(questions_data, ground_truths_data, sources_data):
         if pd.isna(q) or pd.isna(gt):
             continue
-        valid_data.append((str(q).strip(), str(gt).strip()))
+        valid_data.append((str(q).strip(), str(gt).strip(), src))
+    
+    # 设置生成的样本数量限制 (None 表示不限制)
+    MAX_SAMPLES = 20
+    if MAX_SAMPLES is not None:
+        print(f"限制生成前 {MAX_SAMPLES} 条数据...")
+        valid_data = valid_data[:MAX_SAMPLES]
     
     if not valid_data:
         print("没有有效样本，结束评估。")
@@ -100,6 +110,7 @@ def main():
 
     questions_input = [item[0] for item in valid_data]
     ground_truths_input = [item[1] for item in valid_data]
+    sources_input = [item[2] for item in valid_data]
     
     print(f"共 {len(questions_input)} 个问题，开始批量处理...")
     
@@ -108,12 +119,22 @@ def main():
         # batch_size 可根据显存大小调整，4090 可以尝试 8 或 16
         results = qa_system.batch_answer(questions_input, batch_size=16)
         
-        for q, gt, res in zip(questions_input, ground_truths_input, results):
+        for q, gt, src, res in zip(questions_input, ground_truths_input, sources_input, results):
             questions.append(q)
             ground_truths.append(gt)
+            sources.append(src)
             answers.append(res['answer'])
-            # 将 contexts 列表转换为字符串以便保存 CSV
-            ctx_str = '\n\n'.join([c['text'] for c in res['contexts']])
+            # 将 contexts 列表转换为字符串以便保存 CSV，并包含分数和 chunk_id
+            ctx_items = []
+            for c in res['contexts']:
+                text = c.get('text', '')
+                score = c.get('score', 'N/A')
+                chunk_id = c.get('chunk_id', 'N/A')
+                rank = c.get('rank', 0)
+                original_rank = c.get('original_rank', '')
+                ctx_items.append(f"{rank}({original_rank}).{text}\n(Score: {score}, ChunkID: {chunk_id})")
+            
+            ctx_str = '\n\n'.join(ctx_items)
             contexts_list.append(ctx_str)
             
     except Exception as e:
@@ -132,6 +153,7 @@ def main():
     result_df = pd.DataFrame({
         'question': questions,
         'ground_truth': ground_truths,
+        'source_id': sources,
         'answer': answers,
         'contexts': contexts_list
     })

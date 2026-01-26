@@ -18,7 +18,7 @@ from tqdm import tqdm # Add tqdm import
 
 import torch
 from qdrant_client import QdrantClient
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, CrossEncoder
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, TextIteratorStreamer
 from peft import PeftModel
 
@@ -101,6 +101,7 @@ class KnowledgeBaseQA:
         embedding_path: Union[str, Path, None] = DEFAULT_EMBEDDING_PATH,
         llm_path: Union[str, Path] = DEFAULT_LLM_PATH,
         top_k: int = 4,
+        use_reranker: bool = False,
     ) -> None:
         self.client = QdrantClient(path=str(qdrant_path))
         self.collection_name = collection_name
@@ -108,6 +109,13 @@ class KnowledgeBaseQA:
         self.embedder = load_embedding_model(resolved_path)
         self.generator = load_llm(llm_path)
         self.top_k = top_k
+        self.use_reranker = use_reranker
+        if self.use_reranker:
+            # 使用 tqdm 显示加载过程，虽然只是一次性加载，但能显示耗时
+            print(f"使用重排序rerank，即将加载模型")
+            with tqdm(total=1, desc="Loading Reranker", unit="model") as pbar:
+                self.reranker = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2', device="cuda" if torch.cuda.is_available() else "cpu")
+                pbar.update(1)
 
     def retrieve(self, question: str, top_k: int | None = None) -> List[Dict]:
         query_vector = self.embedder.encode(question, show_progress_bar=False)
@@ -134,6 +142,32 @@ class KnowledgeBaseQA:
             )
         return contexts
 
+    def rerank(self, query: str, retrieved_docs: List[Dict]) -> List[Dict]:
+        """对检索结果进行重排序"""
+        if not self.use_reranker or not retrieved_docs:
+            return retrieved_docs
+        
+        # 准备 reranker 输入: 构建 query-doc pairs
+        query_doc_pairs = [(query, doc['text']) for doc in retrieved_docs]
+        
+        # 调用 CrossEncoder 计算相关性分数
+        rerank_scores = self.reranker.predict(query_doc_pairs)
+        
+        # 按分数排序
+        scored_docs = list(zip(retrieved_docs, rerank_scores))
+        scored_docs.sort(key=lambda x: x[1], reverse=True)
+        
+        # 构建最终结果
+        reranked_docs = []
+        for rank, (doc, score) in enumerate(scored_docs, start=1):
+            reranked_doc = doc.copy()
+            reranked_doc['score'] = float(score)  # 使用重排序分数
+            reranked_doc['rank'] = rank
+            reranked_docs.append(reranked_doc)
+            reranked_doc['original_rank'] = doc.get('rank', 0)
+            reranked_doc['chunk_id'] = doc.get('chunk_id') # 确保保留 chunk_id
+        return reranked_docs
+
     @staticmethod
     def build_prompt(question: str, contexts: List[Dict]) -> str:
         if contexts:
@@ -157,6 +191,8 @@ class KnowledgeBaseQA:
 
     def answer(self, question: str, top_k: int | None = None) -> Dict:
         contexts = self.retrieve(question, top_k)
+        if self.use_reranker:
+            contexts = self.rerank(question, contexts)
         prompt = self.build_prompt(question, contexts)
         generation = self.generator(prompt, return_full_text=False)[0]["generated_text"]
         return {"answer": generation, "contexts": contexts}
@@ -194,7 +230,11 @@ class KnowledgeBaseQA:
                 )
             all_contexts.append(contexts)
             
-        # 3. 构建 Prompts
+        # 3. 如果开启重排序，对结果进行处理
+        if self.use_reranker:
+            all_contexts = [self.rerank(q, ctx) for q, ctx in zip(questions, all_contexts)]
+            
+        # 4. 构建 Prompts
         prompts = [self.build_prompt(q, ctx) for q, ctx in zip(questions, all_contexts)]
         
         # 4. 批量生成
