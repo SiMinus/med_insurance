@@ -103,13 +103,13 @@ class QwenPlusLLM(DeepEvalBaseLLM):
 def main():
     # 1. 路径配置
     base_dir = Path(__file__).resolve().parent.parent
-    data_path = base_dir / "data" / "page4_11.xlsx"
+    data_path = base_dir / "data" / "full_content.xlsx"
     output_dir = base_dir / "data" / "generated_answers_eval"
     
     output_dir.mkdir(parents=True, exist_ok=True)
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_file = output_dir / f"generated_answers_eval_{timestamp}.csv"
+    output_file = output_dir / f"eval_result{timestamp}.csv"
 
     if not data_path.exists():
         print(f"错误: 数据文件不存在 {data_path}")
@@ -127,7 +127,7 @@ def main():
                 col_map["question"] = col
             if "标准答案" in col or "ground_truth" in col.lower():
                 col_map["ground_truth"] = col
-            if "来源 (Source ID)" in col:
+            if "来源" in col:
                 col_map["source"] = col
         
         if "question" not in col_map or "ground_truth" not in col_map:
@@ -243,7 +243,7 @@ def main():
                     model=deepeval_llm,
                     include_reason=True
                 )
-                faith_metric.measure(test_case)
+                faith_metric.measure(test_case, _show_indicator=False)
                 faith_scores.append(faith_metric.score)
                 faith_reasons.append(faith_metric.reason)
                 alpha_steps = [
@@ -271,12 +271,12 @@ def main():
                 pbar.set_description(f"Eval {i+1}: Correctness")
                 corr_metric = GEval(
                     name="Correctness",
-                    evaluation_params=[LLMTestCaseParams.ACTUAL_OUTPUT, LLMTestCaseParams.EXPECTED_OUTPUT],
+                    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT, LLMTestCaseParams.EXPECTED_OUTPUT],
                     evaluation_steps=alpha_steps,
                     model=deepeval_llm,
                     threshold=0.5
                 )
-                corr_metric.measure(test_case)
+                corr_metric.measure(test_case, _show_indicator=False)
                 corr_scores.append(corr_metric.score)
                 corr_reasons.append(corr_metric.reason)
                 
